@@ -23,7 +23,7 @@ class LinearBasisFunction(object):
             input_vector.append(x)
 
         return np.array(input_vector)
-
+    
     def setupOutput(self, input_vector):
         return np.array([(2 * x ** 2 - 6 * x +1) for x in input_vector])
 
