@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cv2
 import mnist
 import itertools
-import PerceptronOnlineTraining
+from exercise1.part1.PerceptronOnlineTraining import perceptron_online_training
 
 
 def get_digits(digits, nr_samples_in_class=500):
@@ -22,24 +22,16 @@ def get_digits(digits, nr_samples_in_class=500):
     return data_set, targets
 
 
-def calculate_features(image_array):
+def calculate_features(image_array, props=None):
     # biggest contour or what?
+    if props is None or len(props) < 2:
+        props = ['solidity', 'area']
     shape = np.shape(image_array)
-    feature_vector = np.zeros([2, shape[0]])
-    multiple_contours = 0
-    for idx, img in enumerate(image_array):
-        img[img > 0] = 255
-        im2, contours, hierarchy = cv2.findContours(img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-        area = 0
-        hull_area = 0
+    # feature_vector = np.zeros([2, shape[0]])
+    prop_dict = collect_regionprops(image_array, props)
+    feature_vector = np.array([[feature_dict[props[0]] for feature_dict in prop_dict],
+                               [feature_dict[props[1]] for feature_dict in prop_dict]])
 
-        for contour in contours:
-            area += cv2.contourArea(contour)
-            hull = cv2.convexHull(contour, returnPoints=True)
-            hull_area += cv2.contourArea(hull)
-        solidity = float(area) / hull_area
-        feature_vector[:, idx] = np.array([area, solidity])
-    print(multiple_contours)
     return feature_vector
 
 
@@ -148,10 +140,14 @@ def scatter_matrix_from_dict(prop_array, targets):
     return fig
 
 
+
 digits = [1, 5]
 training_set, training_targets = get_digits(digits)
 
 features = calculate_features(training_set)
 properties = collect_regionprops(training_set)
-fig = scatter_matrix_from_dict(properties, training_targets)
+
+weights = perceptron_online_training(features, targets=training_targets, max_iterations=10000)
+
+# fig = scatter_matrix_from_dict(properties, training_targets)
 plt.show()
