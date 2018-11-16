@@ -139,7 +139,9 @@ def scatter_matrix_from_dict(prop_array, targets):
 
     return fig
 
-
+def show_decision_boundary_simple(feature_matrix,weights):
+    fig = plt.figure()
+    
 
 digits = [1, 5]
 training_set, training_targets = get_digits(digits)
