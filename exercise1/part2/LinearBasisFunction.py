@@ -61,6 +61,17 @@ class LinearBasisFunction(object):
 
         return np.sum(error)
 
+    def calulcateWStar(self, order):
+
+        A =  np.zeros((order+1, order+1))
+        x = self.training_set[0]         
+        t = self.training_set[1]
+        
+        for row in self.my_range(0, order, 1):
+            for j in self.my_range(0, order, 1):
+                A = 
+
+
 
     def calculateAndPlot(self, ws):
         axis=[-1, 6, -100, 100]
@@ -71,13 +82,12 @@ class LinearBasisFunction(object):
         plt.plot(self.training_set[0], self.training_set[1], 'b*')
         plt.axis(axis)
 
-        
 
         for w in ws:
             w_phi = np.array( [ self.fit(x_value, w) for x_value in x] )            
             error = (t - w_phi) ** 2 
             print(np.sum(error))
-            plt.plot(x, w_phi*x , 'g--' )
+            plt.plot(x, w_phi*x , 'g-' )
             plt.pause(0.25)
 
         plt.show()            
