@@ -18,6 +18,14 @@ class ClosedForm:
 
         return np.array(input_vector)
 
+    def getSetup(self):
+        return [ self.mu, self.sigma, self.training_set]
+
+    def setSetup(self, setupData):
+        self.mu = setupData[0]
+        self.sigma = setupData[1]
+        self.training_set = setupData[2]
+
     def my_range(self, start, end, step):        
         while start <= end:
             yield start
@@ -41,17 +49,21 @@ class ClosedForm:
         j= j+1       
         a = np.zeros([j,j])
         B = np.zeros(j)
+        x = self.training_set[0]         
+        t = self.training_set[1]
 
         for i in range(j):
             for k in range(j):               
-                a[i][k] = self.afit(self.training_set[0], k+i)
+                a[i][k] = self.afit(x, k+i)
 
-            B[i] = self.bfit(self.training_set[0],self.training_set[1],i)
-
-        
+            B[i] = self.bfit(x,self.training_set[1],i)
+    
         w_ = np.linalg.solve(a, B)    
         
-        return w_        
+        w_phi = np.array( [ self.fit(x_value, w_) for x_value in x] )            
+        error = np.sum((t - w_phi) ** 2 )
+
+        return [error, w_]        
     
     def presentMode(self, max):
         ws = []
@@ -79,20 +91,18 @@ class ClosedForm:
 
     def calculateErrorAndPlot(self, ws):
         axis=[-1, 6, -100, 100]
-        x = self.training_set[0]         
-        t = self.training_set[1]
+        
         x_ = np.linspace(-1.0,6.0, num=50)
     
         plt.plot(self.input_vector, self.output_vector, 'r-')
         plt.plot(self.training_set[0], self.training_set[1], 'b*')
         plt.axis(axis)
 
-        for w in ws:
-            y_ = np.array( [ self.fit(x_value, w) for x_value in x_] )            
-            w_phi = np.array( [ self.fit(x_value, w) for x_value in x] )            
-            error = (t - w_phi) ** 2 
-            print('error:')
-            print(np.sum(error))
+        for d_w in ws:
+            w = d_w[1]
+            print('error:'+str(d_w[0]))
+
+            y_ = np.array( [ self.fit(x_value, w) for x_value in x_] )                    
             plt.plot(x_, y_ , 'g-' )
             plt.pause(0.25)
 

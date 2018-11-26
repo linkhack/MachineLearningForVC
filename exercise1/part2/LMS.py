@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-class LinearBasisFunction(object):
+class LMS:
 
     # Constructor
     def __init__(self, range_vector=[0, 5], step=0.1):
@@ -9,7 +9,16 @@ class LinearBasisFunction(object):
         self.input_vector = self.setup(range_vector, step)
         self.output_vector = self.setupOutput(self.input_vector)
         self.training_set = self.setupTraingingSet()    
+        print(self.training_set)
 
+    def getSetup(self):
+        return [ self.mu, self.sigma, self.training_set]
+
+    def setSetup(self, setupData):
+        self.mu = setupData[0]
+        self.sigma = setupData[1]
+        self.training_set = setupData[2]
+        
 
     def my_range(self, start, end, step):        
         while start <= end:
@@ -43,53 +52,42 @@ class LinearBasisFunction(object):
         plt.axis(axis)
         plt.show()
 
-    def fit(self, x, w):
+    def augment(self, x, d):
         phi = []        
-        for i in self.my_range(0, len(w)-1, 1):
+        for i in range(d):
             phi.append(x ** i)
-
-        phi = np.array(phi)
-        return (phi.dot(w))
-
-    def calculateError(self, w, showPlot = 0):
-        x = self.training_set[0]         
-        t = self.training_set[1]
-
-        w = np.array(w)
-        w_phi = np.array( [ self.fit(x_value, w) for x_value in x] )            
-        error = (t - w_phi) ** 2
-
-        return np.sum(error)
-
-    def calulcateWStar(self, order):
-
-        A =  np.zeros((order+1, order+1))
-        x = self.training_set[0]         
-        t = self.training_set[1]
+        return np.array(phi)
         
-        for row in self.my_range(0, order, 1):
-            for j in self.my_range(0, order, 1):
-                A = 
 
-
-
-    def calculateAndPlot(self, ws):
+    def learn(self, w, maxIterations = 500, gamma = 0.001, plot = 0):
+        d= len(w)
         axis=[-1, 6, -100, 100]
         x = self.training_set[0]         
         t = self.training_set[1]
+        n = len(x)
+        if(plot == 1):
+            plt.plot(self.input_vector, self.output_vector, 'r-')
+            plt.plot(self.training_set[0], self.training_set[1], 'b*')
+            plt.axis(axis)
 
-        plt.plot(self.input_vector, self.output_vector, 'r-')
-        plt.plot(self.training_set[0], self.training_set[1], 'b*')
-        plt.axis(axis)
+        iterations = 0
+        while ( iterations <= maxIterations):
+            error = 0
+            for i in range(n):
+                o = np.dot(np.array(w).transpose(), self.augment(x[i],d))                                            
+                error = error + np.power( t[i] - o , 2 )
+                w = w + np.dot( gamma * ( t[i] - o), self.augment(x[i],d))
 
+            #print(error)
+            #print(w)        
+            if(plot == 1 and iterations % 75 == 0):
+                plt.plot(x, [np.dot(w , self.augment(x_i,d)) for x_i in x ], 'g-' )
+                plt.pause(0.25)            
+            iterations = iterations + 1
+    
+        if(plot == 1):
+            plt.show()            
 
-        for w in ws:
-            w_phi = np.array( [ self.fit(x_value, w) for x_value in x] )            
-            error = (t - w_phi) ** 2 
-            print(np.sum(error))
-            plt.plot(x, w_phi*x , 'g-' )
-            plt.pause(0.25)
-
-        plt.show()            
+        return [error, w]    
 
         
