@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import cv2
 import mnist
 import itertools
-from exercise1.part1.PerceptronOnlineTraining import perceptron_online_training
+from exercise1.part1.PerceptronOnlineTraining import perceptron_online_training, perc
 
 
 def get_digits(digits, nr_samples_in_class=500):
@@ -14,10 +14,12 @@ def get_digits(digits, nr_samples_in_class=500):
     nr_samples_in_class = np.min([nr_samples_in_class, np.size(digit1_indices), np.size(digit2_indices)])
     digit1_indices = digit1_indices[:nr_samples_in_class]
     digit2_indices = digit2_indices[:nr_samples_in_class]
-    indices = np.concatenate((digit1_indices, digit2_indices))
-    targets = targets_complete[indices]
-    targets[targets == digits[0]] = 1
-    targets[targets == digits[1]] = -1
+    #important if first all 1 then all -1 gives not a good result
+    indices = np.random.permutation(np.concatenate((digit1_indices, digit2_indices)))
+    unsigned_targets = targets_complete[indices]
+    targets = np.zeros(2*nr_samples_in_class)
+    targets[unsigned_targets == digits[0]] = 1
+    targets[unsigned_targets == digits[1]] = -1
     data_set = data_set_complete[indices, :, :]
     return data_set, targets
 
@@ -25,7 +27,7 @@ def get_digits(digits, nr_samples_in_class=500):
 def calculate_features(image_array, props=None):
     # biggest contour or what?
     if props is None or len(props) < 2:
-        props = ['solidity', 'area']
+        props = ['solidity', 'eccentricity']
     shape = np.shape(image_array)
     # feature_vector = np.zeros([2, shape[0]])
     prop_dict = collect_regionprops(image_array, props)
@@ -71,6 +73,9 @@ def calculate_regionprops(image):
     # eccentricity
     eccentricity = np.sqrt(1 - float(MA * MA) / (ma * ma))
 
+    # moments
+    moments = cv2.moments(contour)
+
     regionprops['area'] = area
     regionprops['aspect_ratio'] = aspect_ratio
     regionprops['extent'] = extent
@@ -87,7 +92,7 @@ def calculate_regionprops(image):
 # regionprops for all test images
 def collect_regionprops(image_array, props=None):
     if props is None:
-        props = ['area', 'aspect_ratio', 'extent', 'solidity', 'equivalent_diameter', 'orientation', 'convex_area',
+        props = ['area', 'aspect_ratio', 'solidity', 'equivalent_diameter', 'orientation', 'convex_area',
                  'eccentricity', 'perimeter']
     prop_list = []
     for img in image_array:
@@ -139,17 +144,41 @@ def scatter_matrix_from_dict(prop_array, targets):
 
     return fig
 
-def show_decision_boundary_simple(feature_matrix,weights):
+
+def show_decision_boundary_simple(feature_matrix, weights):
     fig = plt.figure()
-    
 
-digits = [1, 5]
-training_set, training_targets = get_digits(digits)
 
-features = calculate_features(training_set)
-properties = collect_regionprops(training_set)
+def augment_data(data):
+    data_dimension = np.size(data, 0)
+    nr_of_datapoints = np.size(data, 1)
+    augmented_data = np.ones([data_dimension + 1, nr_of_datapoints])
+    augmented_data[:-1, :] = data
+    return augmented_data
 
-weights = perceptron_online_training(features, targets=training_targets, max_iterations=10000)
 
-# fig = scatter_matrix_from_dict(properties, training_targets)
-plt.show()
+def main():
+    digits = [2, 5]
+    training_set, training_targets = get_digits(digits,100)
+
+    features = calculate_features(training_set)
+    properties = collect_regionprops(training_set)
+
+    features = augment_data(features)
+
+    weights = perceptron_online_training(features, targets=training_targets, max_iterations=1000000)
+    perc_result = perc(weights, features)
+    correct = np.equal(perc_result, training_targets)
+    correct_nr = sum(correct)
+    print(str(correct_nr))
+    correct_precentage = np.sum(correct) / np.size(features,1)
+    print("Correct percentage:" + str(correct_precentage))
+
+    plt.scatter(features[0,:], features[1,:],c = training_targets)
+    # fig = scatter_matrix_from_dict(properties, training_targets)
+    plt.show()
+    return
+
+
+if __name__ == '__main__':
+    main()
