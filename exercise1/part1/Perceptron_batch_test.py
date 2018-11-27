@@ -34,20 +34,23 @@ def perc(w, X):
 
 
 def percTrain(X, t, maxIts):
-    """returns a weight vector w corresponding to the decision boundary separating the input vectors in X according to their target values t. """
+    """returns a weight vector w corresponding to the decision boundary separating the input vectors in X according to
+        their target values t.
+        Assumes the data was already augmented (homogeneous coordinates) training_set[0,:]=1
+    """
     n = np.size(X, 0)
     m = np.size(X, 1)
-    w = [0 for i in range(1, n + 1)]
+    w = np.zeros(n)
     state = True
     Its = 0
     perc0 = perc(w, X)
 
     while state and Its < maxIts:  # we continue while the vectors are missclassified (state = True) and while the number of iterations is below the maximum
-
+        delta = 0.0
         for i in range(0, m):  # adding to the perceptron all vectors that are missclassified
-            if perc0[i] == -t[i]:
-                w = w + t[i] * X[:, i] /m
-
+            if perc0[i] != t[i]:
+                delta += t[i] * X[:, i]
+        w += delta/m
         perc0 = perc(w, X)  # classification of vectors with the new perceptron
         nb_missed = 0
         for i in range(0, m):  # consider the number of vectors missclassified
@@ -266,6 +269,7 @@ for x in X:  # calculations of the boundaries
 plt.plot(X0, Y0, "r")
 plt.plot(X1, Y1, "b")
 plt.plot(X_6d, Y_6d, "r--")
+plt.show()
 
 # %% training on the full image
 train_set_images = []
@@ -323,5 +327,3 @@ test_set_label = np.array(test_set_label)
 # %% features of the test set
 
 # %% result on the test set
-
-test_result_2d = perc()

@@ -2,6 +2,7 @@ import mnist
 import numpy as np
 import cv2
 import itertools
+import matplotlib.pyplot as plt
 
 
 def get_digits(digits, nr_samples_in_class=500):
@@ -148,5 +149,6 @@ def augment_data(data):
     augmented_data[:-1, :] = data
     return augmented_data
 
-def transform_features:
-    """ Transform features (x,y) to ( """
+def transform_features(data):
+    """ Transform features (x,y) to (1, """
+    return 0
