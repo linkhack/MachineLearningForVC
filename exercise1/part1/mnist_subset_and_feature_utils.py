@@ -1,9 +1,7 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import cv2
 import mnist
+import numpy as np
+import cv2
 import itertools
-from exercise1.part1.PerceptronOnlineTraining import perceptron_online_training, perc
 
 
 def get_digits(digits, nr_samples_in_class=500):
@@ -14,10 +12,10 @@ def get_digits(digits, nr_samples_in_class=500):
     nr_samples_in_class = np.min([nr_samples_in_class, np.size(digit1_indices), np.size(digit2_indices)])
     digit1_indices = digit1_indices[:nr_samples_in_class]
     digit2_indices = digit2_indices[:nr_samples_in_class]
-    #important if first all 1 then all -1 gives not a good result
+    # important if first all 1 then all -1 gives not a good result
     indices = np.random.permutation(np.concatenate((digit1_indices, digit2_indices)))
     unsigned_targets = targets_complete[indices]
-    targets = np.zeros(2*nr_samples_in_class)
+    targets = np.zeros(2 * nr_samples_in_class)
     targets[unsigned_targets == digits[0]] = 1
     targets[unsigned_targets == digits[1]] = -1
     data_set = data_set_complete[indices, :, :]
@@ -28,8 +26,6 @@ def calculate_features(image_array, props=None):
     # biggest contour or what?
     if props is None or len(props) < 2:
         props = ['solidity', 'eccentricity']
-    shape = np.shape(image_array)
-    # feature_vector = np.zeros([2, shape[0]])
     prop_dict = collect_regionprops(image_array, props)
     feature_vector = np.array([[feature_dict[props[0]] for feature_dict in prop_dict],
                                [feature_dict[props[1]] for feature_dict in prop_dict]])
@@ -145,32 +141,12 @@ def scatter_matrix_from_dict(prop_array, targets):
     return fig
 
 
-def show_decision_boundary_simple(feature_matrix, weights):
-    fig = plt.figure()
+def augment_data(data):
+    data_dimension = np.size(data, 0)
+    nr_of_datapoints = np.size(data, 1)
+    augmented_data = np.ones([data_dimension + 1, nr_of_datapoints])
+    augmented_data[:-1, :] = data
+    return augmented_data
 
-
-def main():
-    digits = [2, 5]
-    training_set, training_targets = get_digits(digits,1000)
-
-    features = calculate_features(training_set)
-    properties = collect_regionprops(training_set)
-
-    features = augment_data(features)
-
-    weights = perceptron_online_training(features, targets=training_targets, max_iterations=1000000)
-    perc_result = perc(weights, features)
-    correct = np.equal(perc_result, training_targets)
-    correct_nr = sum(correct)
-    print(str(correct_nr))
-    correct_precentage = np.sum(correct) / np.size(features,1)
-    print("Correct percentage:" + str(correct_precentage))
-
-    plt.scatter(features[0,:], features[1,:],c = training_targets)
-    # fig = scatter_matrix_from_dict(properties, training_targets)
-    plt.show()
-    return
-
-
-if __name__ == '__main__':
-    main()
+def transform_features:
+    """ Transform features (x,y) to ( """
