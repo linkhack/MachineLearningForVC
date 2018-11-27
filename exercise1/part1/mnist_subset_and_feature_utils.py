@@ -150,5 +150,14 @@ def augment_data(data):
     return augmented_data
 
 def transform_features(data):
-    """ Transform features (x,y) to (1, """
-    return 0
+    """ Transform features (x,y) to (1,x,y,x**2,y**2,x*y) """
+    nr_of_datapoints = np.size(data,1)
+    transformed_features = np.ones([6, nr_of_datapoints])
+    compt = 0
+    for features in data:
+        x = features[0]
+        y = features[1]
+        transformed_features[:, compt] = [1,x,y,x**2,y**2,x*y]
+        compt +=1
+        
+    return transformed_features
