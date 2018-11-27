@@ -33,8 +33,8 @@ class LMS:
 
         return np.array(input_vector)
 
-    def setupOutput(self, input_vector):
-        return np.array([(2 * x ** 2 - 6 * x +1) for x in input_vector])
+    def setupOutput(self, input_vector):        
+        return np.array([(2 * (x ** 2) - (6 * x) +1) for x in input_vector])
 
     def setupTraingingSet(self):
         select_index = []
@@ -61,7 +61,7 @@ class LMS:
 
     def learn(self, w, maxIterations = 500, gamma = 0.001, plot = 0):
         d= len(w)
-        axis=[-1, 6, -100, 100]
+        axis=[-1, 6, -15, 30]
         x = self.training_set[0]         
         t = self.training_set[1]
         n = len(x)

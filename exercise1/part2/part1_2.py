@@ -17,8 +17,21 @@ for y in range(3):
 
 print('starting w :'+str(w))
 
-# 1000 iterations, plot output (every 75th iteration)
-result = lms.learn( [0,0,0] , 1000, 0.001 , 1 )
+
+# 1000 iterations,
+# 0.001 as gamma
+# plot output (every 75th iteration)
+result = lms.learn( w , 1000, 0.001 , 1 )
+
+# 500 iterations,
+# 0.01 as gamma
+# plot output (every 75th iteration)
+#result = lms.learn( [0,0,0] , 500, 0.009 , 1 )
+
+# 100 iterations,
+# 0.1 as gamma
+# plot output (every 75th iteration)
+#result = lms.learn( [0,0,0] , 500, 0.09 , 1 )
 
 
 # used closed form 
@@ -34,4 +47,4 @@ print("cf w: " + str(result_c[1]))
 print('-----------------------')
 
 #show how overfitting impacts results
-t.presentMode(25)
+#t.presentMode(9)
