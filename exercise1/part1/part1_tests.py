@@ -15,12 +15,12 @@ def main():
 
     features = utils.calculate_features(training_set)
     properties = utils.collect_regionprops(training_set)
-
+    plt.figure()
     fig = utils.scatter_matrix_from_dict(properties, training_targets)
 
     features = utils.augment_data(features)
 
-    weights = perceptron_online_training(features, targets=training_targets, max_iterations=500000)
+    weights = Perceptron.percTrain(features, training_targets, 500, online=False)
     perc_result = perc(weights, features)
     correct = np.equal(perc_result, training_targets)
     correct_nr = sum(correct)
@@ -31,7 +31,7 @@ def main():
 #    plt.scatter(features[0, :], features[1, :], c=training_targets)
 #    # fig = scatter_matrix_from_dict(properties, training_targets)
 #    plt.show()
-
+    plt.figure()
     Perceptron.plot_decision_boundary(weights, features, training_targets,False)
 #    fig.show()
     
