@@ -8,35 +8,11 @@ class ClosedForm:
         self.input_vector = input_vector
         self.output_vector = output_vector
 
-    def calcOptimalImageW(self, x , t):    
-        
-        X = x                         
-        a = np.zeros([29*30*len(X),1])
-        print(a)
-        i= 1
-        for x in X:
-            for k in range(1,29):
-                for l in range(1,30):     
-                    print(x[k-1][l-1])          
-                    print(i*k*l -1)
-                    a[i*k*l -1 ] = x[k-1][l-1]                                  
-            #img done        
-            i = i+1        
-    
-        inv= np.linalg.pinv(a)
-
-        w_ = inv.dot(t)    
-        w_phi = np.array( [ self.fit(x_value, w_) for x_value in X] )            
-        error = np.sum((t - w_phi) ** 2 )
-
-
-        return [error, w_]  
-
-    def calcOptimalW(self,j): 
+    def calcOptimalW(self,j, plot = 1): 
         j= j+1
         
         X = self.training_set[0]         
-        t = self.training_set[1]
+        t = self.training_set[1]    
         a = np.zeros([len(t),j])
         
         i= 0
@@ -46,20 +22,29 @@ class ClosedForm:
             i = i+1        
     
         inv= np.linalg.pinv(a)
-
+        
         w_ = inv.dot(t)    
         w_phi = np.array( [ self.fit(x_value, w_) for x_value in X] )            
         error = np.sum((t - w_phi) ** 2 )
+
+        if(plot == 1):
+            axis=[-1, 6, -15, 30]
+            plt.figure()
+            plt.plot(self.input_vector, self.output_vector, 'r-')
+            plt.plot(self.training_set[0], self.training_set[1], 'b*')
+            plt.axis(axis)
+            y_ = np.array( [ self.fit(x_value, w_) for x_value in X] )                    
+            plt.plot(X, y_ , 'g-' )
+            plt.show()
 
         return [error, w_]        
     
     def presentMode(self, max):
         ws = []
         for i in range(max):
-            ws.append( self.calcOptimalW(i))
+            ws.append( self.calcOptimalW(i,0))
 
         self.calculateErrorAndPlot(ws)
-
 
     def calculateErrorAndPlot(self, ws):
         axis=[-1, 6, -100, 100]
