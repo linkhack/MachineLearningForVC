@@ -10,23 +10,23 @@ class ClosedForm:
 
     def calcOptimalImageW(self, x , t):    
         
-        X = x                         
-        a = np.zeros([29*30*len(X),1])
-        print(a)
-        i= 1
-        for x in X:
-            for k in range(1,29):
-                for l in range(1,30):     
-                    print(x[k-1][l-1])          
-                    print(i*k*l -1)
-                    a[i*k*l -1 ] = x[k-1][l-1]                                  
-            #img done        
-            i = i+1        
+        X = np.transpose(x)                         
+#        a = np.zeros([29*30*len(X),1])
+#        print(a)
+#        i= 1
+#        for x in X:
+#            for k in range(1,29):
+#                for l in range(1,30):     
+#                    print(x[k-1][l-1])          
+#                    print(i*k*l -1)
+#                    a[i*k*l -1 ] = x[k-1][l-1]                                  
+#            #img done        
+#            i = i+1        
     
-        inv= np.linalg.pinv(a)
+        inv= np.linalg.pinv(X)
 
         w_ = inv.dot(t)    
-        w_phi = np.array( [ self.fit(x_value, w_) for x_value in X] )            
+        w_phi = X.dot(w_)            
         error = np.sum((t - w_phi) ** 2 )
 
 

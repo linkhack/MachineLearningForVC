@@ -98,10 +98,11 @@ class ImageSetup:
             img  = training_set[0]   
             y  = training_set[1]                     
             flat_img  = np.array(img).ravel()                                            
-            vector = np.matrix(flat_img)
+            vector = flat_img
 
-            augmentedData.append(np.array(self.augment_data(np.array(vector))))
+            augmentedData.append(vector)
             ts.append(y)
+        augmentedData = self.augment_data(np.transpose(augmentedData))
         
         return [augmentedData, ts]            
 
