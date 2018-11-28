@@ -1,4 +1,3 @@
-
 \subsection{LMS vs. closed Form}
 We followed the instructions and used the  function below with $G = 6$ to determine our $y$ values for the experimental setup.
 \begin{equation}
@@ -15,8 +14,7 @@ f(x) = 2x^2 - Gx +1
 \end{figure}
 
 \subsubsection{What is the resulting weight Vector when using the LMS rule?}
-
-We implemented an online LMS learning rule for regression to determine useful weights to fit the curve. Figure \ref{ig:lms} shows three runs with randomised training data. As we can see the fitted curve is moved towards the original curve with each iteration. $\gamma$ or the learning factor controls how much impact new values have on the resulting weights for the next iteration. 
+We implemented an online LMS learning rule for regression to determine useful weights to fit the curve. Figure \ref{fig:lms} shows four runs with randomised training data. As we can see the fitted curve is moved towards the original curve with each iteration. 
 
 \begin{figure}[!h]
 \begin{center}
@@ -30,11 +28,8 @@ We implemented an online LMS learning rule for regression to determine useful we
 \end{figure}
 
 
-
 \subsubsection{How can you determine the optimal $w*$ in closed form?  Compare $w*$ with the outcome of the {LMS}-rule training}
-
-We used the pseudo inverse approach to minify the sum of squares error. As displayed the in the Tables, \ref{tab:error} and \ref{tab:weights} we can see the resulting weights and the calculated errors. We can see that the error rate for our four examples with CF are all better without much surprise.
-
+We used Moore-Penrose-Inverse to minify the sum of squares error. As displayed the in the Tables, \ref{tab:error} and \ref{tab:weights} we can see the resulting weights and the calculated errors. We can see that the error rate for our four examples with CF are all lower compared to LMS, without much surprise.
 
 \begin{figure}[!h]
 \begin{center}
@@ -46,7 +41,6 @@ We used the pseudo inverse approach to minify the sum of squares error. As displ
 \end{center}
 \caption{\label{fig:cf}the same training data as in figure, however this time solved in closed form (\textbf{CF}) }
 \end{figure}
-
 
 
 \begin{table}[!h]
@@ -73,10 +67,9 @@ d               &        -2.58665078 -0.97237072  0.9121616       &         -3.0
 
 
 \subsubsection{Influence of $\gamma$ }
+ $\gamma$ has influence over the fact if the algorithm can converge in the end. In case $gamma$ is set too high, new values get too much weight, thus 'overriding' older ones and introducing change to quickly. See Figure \ref {fig:gamma} for an example.
 
-As mentioned earlier $\gamma$ has to influence if the algorithm can converge. In case $gamma$ is too big, new values get too much weight, thus 'overriding' older ones. See Figure \ref {fig:gamma}
-
-\begin{figure}[!h]
+\begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=5cm]{fig_gamma.png}
@@ -85,8 +78,7 @@ As mentioned earlier $\gamma$ has to influence if the algorithm can converge. In
 \end{figure}
 
 
-
-
+\newpage
 \subsection{Image Data}
-Unfortnuately we did not finish in time 
+Unfortunately we did not finish in time, and we will not present this task here.
 

@@ -56,5 +56,6 @@ print("cf w: " + str(result_c[1]))
 print('-----------------------')
 
 #show how overfitting impacts
-t.presentMode(9)
+#
+#t.presentMode(9)
 
