@@ -90,42 +90,20 @@ class ImageSetup:
         return self.output_vector
     
     def getAugmentedData(self):
-        
+        data = []
         img = []
         augmentedData = []
         ts = []
-            
         for training_set in self.training_set:
-            img  = training_set[0]               
+            img  = training_set[0]   
             y  = training_set[1]                     
-            x  = training_set[2]                     
-            m_1 = training_set[3]                     
-            m_2 = training_set[4] 
-        
-            tData= []
-            data= np.zeros(29*29)
-            ts = []
-            for i in range(29):
-                for j in range(29):                    
-                    #imgData.append( [1 , (i-m_1)**2, (j-m_2)**2, - (3*x) **2  ])                                    
-                    #augmentedData.append(img[i][j] )        
-                    data[ (i*29 + j) ] =img[i][j]
-                    ts.append(np.array([y]) )
-        
-            augmentedData.append([data, np.array(ts)])
-            #ts.append(np.array(tData).transpose())
-            
-        return  augmentedData
+            flat_img  = np.array(img).ravel()                                            
+            vector = np.matrix(flat_img)
 
-        print('---------------------------')
-        print(np.shape(augmentedData))
-        #print(augmentedData)
-        print(np.shape(ts))
-        #print(ts)
-        print('---------------------------')
+            augmentedData.append(np.array(self.augment_data(np.array(vector))))
+            ts.append(y)
         
-    
-        return [augmentedData, np.array(ts)]            
+        return [augmentedData, ts]            
 
     def augment_data(self, data):
         data_dimension = np.size(data, 0)
@@ -150,8 +128,7 @@ class ImageSetup:
         images = []
         for x in input:
             y_i = (2 * (x ** 2) - (6 * x) +1)
-            imgD = self.generateImage(x)
-            img = np.array([ imgD[0] , y_i , x , imgD[1], imgD[2]])
+            img = np.array([ self.generateImage(x), y_i , x ])
 
             images.append(img )
 
@@ -176,7 +153,7 @@ class ImageSetup:
                     value_t = 0
                 image[i][j] =  value_t
 
-        return [image, m_1, m_2]
+        return image
 
     def plotImages(self):
         n = len(self.training_set)
