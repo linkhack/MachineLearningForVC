@@ -169,11 +169,10 @@ def transform_features(data):
     """ Transform features (x,y) to (1,x,y,x**2,y**2,x*y) """
     nr_of_datapoints = np.size(data,1)
     transformed_features = np.ones([6, nr_of_datapoints])
-    compt = 0
-    for features in data:
-        x = features[0]
-        y = features[1]
-        transformed_features[:, compt] = [1,x,y,x**2,y**2,x*y]
-        compt +=1
+    for i in range (0,nr_of_datapoints):
+        x = data[0,i]
+        y = data[1,i]
+        transformed_features[:, i] = [1,x,y,x**2,y**2,x*y]
+
         
     return transformed_features

@@ -32,12 +32,12 @@ def plot_decision_boundary(weights,data,targets, transformed):
 
     X_grid, Y_grid = np.meshgrid(x_axis,y_axis);
     if transformed:
-        transformed_features = 0
+        transformed_features = np.array(([np.ones((500,500)),X_grid,Y_grid, X_grid*X_grid,Y_grid*Y_grid, X_grid*Y_grid]))
     else:
         # transformed_features = np.array([[[1,X_grid[i,j], Y_grid[i,j]] for j in range(500)] for i in range(500)])
         transformed_features = np.array(([np.ones((500,500)),X_grid,Y_grid]))
     result = np.transpose(weights)@transformed_features
-    fig = plt.contour(result,0);
+    fig = plt.contour([X_grid,Y_grid],result,0);
     fig.plot(data[1,:],data[2,:])
     fig.show()
 

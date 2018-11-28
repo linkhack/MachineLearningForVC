@@ -24,7 +24,7 @@ def main():
 
     features = utils.transform_features(features)
 
-    weights = Perceptron.percTrain(features, targets=training_targets, online =False, maxIts=5000)[0]
+    weights = Perceptron.percTrain(features, targets=training_targets, online =True, maxIts=20000)
     perc_result = Perceptron.perc(weights, features)
     correct = np.equal(perc_result, training_targets)
     correct_nr = sum(correct)

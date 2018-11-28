@@ -61,8 +61,7 @@ def percTrain(X, t, maxIts):
             state = False
         Its += 1
 
-    return (w,
-            state)  # we also return the state of the perceptron in case the algorithm ended cause the maximum of iterations was reached
+    return (w)# we also return the state of the perceptron in case the algorithm ended cause the maximum of iterations was reached
 
 
 def convertion(image):
