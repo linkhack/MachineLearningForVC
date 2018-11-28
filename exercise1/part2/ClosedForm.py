@@ -9,23 +9,26 @@ class ClosedForm:
         self.output_vector = output_vector
 
     def calcOptimalImageW(self, x , t):    
-        return
-
-        j= 29*29+1               
-        a = np.zeros([j,j])
-        B = np.zeros(j)        
         
-
-        for i in range(j):
-            for k in range(j):               
-                a[i][k] = self.afit(x, k+i)
-
-            B[i] = self.bfit(x, t ,i)
+        X = x                         
+        a = np.zeros([29*30*len(X),1])
+        print(a)
+        i= 1
+        for x in X:
+            for k in range(1,29):
+                for l in range(1,30):     
+                    print(x[k-1][l-1])          
+                    print(i*k*l -1)
+                    a[i*k*l -1 ] = x[k-1][l-1]                                  
+            #img done        
+            i = i+1        
     
-        w_ = np.linalg.solve(a, B)    
-        
-        w_phi = np.array( [ self.fit(x_value, w_) for x_value in x] )            
+        inv= np.linalg.pinv(a)
+
+        w_ = inv.dot(t)    
+        w_phi = np.array( [ self.fit(x_value, w_) for x_value in X] )            
         error = np.sum((t - w_phi) ** 2 )
+
 
         return [error, w_]  
 
@@ -56,22 +59,6 @@ class ClosedForm:
             ws.append( self.calcOptimalW(i))
 
         self.calculateErrorAndPlot(ws)
-
-
-    def afit(self, x, j):
-        phi = []        
-        for i in x:
-            phi.append(i ** j)
-
-        return np.sum(phi)
-        
-
-    def bfit(self, x,y,j):        
-        phi = []        
-        for i in range(len(x)):
-            phi.append((x[i] ** j) * y[i])
-
-        return np.sum(phi)
 
 
     def calculateErrorAndPlot(self, ws):
