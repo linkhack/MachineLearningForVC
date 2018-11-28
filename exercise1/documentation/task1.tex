@@ -41,6 +41,34 @@ The corresponding decision boundries are shown in figure \ref{perceptron:decisio
 \end{figure}
 
 \subsubsection{Classification with feature transform}
+We performed the same experiments as above, but first applied following feature transform to our data. $(x,y)\mapsto (1,x,y,x^2,y^2,xy)$
+
+For the online training algorithm evaluated on the test set we got 385 correctly classified results of 400 test images. We got the following confusion matrix:
+
+\begin{tabular}{ l | c | r }
+\centering
+  n=400 & classified as 1 & classified as 7 \\ \hline
+  Digit 0 & 186 & 14 \\
+  Digit 7 & 0 & 200 \\
+\end{tabular}
+
+For the batch training algorithm evaluated on the same test set we got 383 correctly classified results of 400 test images. We got the following confusion matrix:
+
+\begin{tabular}{ l | c | r }
+\centering
+  n=400 & classified as 1 & classified as 7 \\ \hline
+  Digit 0 & 187 & 13 \\
+  Digit 7 & 4 & 200 \\
+\end{tabular}
+
+The corresponding decision boundries are shown in figure \ref{perceptron:decision:5d}. It's not very surprising that the feature transform doesn't help the classification. as there are yellow points, correspondig to the digit 0, inbetween purple points. Such a simple feature transform cannot separete this points, as the new decision boundry is just a quadratic.
+
+\begin{figure}
+\includegraphics[width = 0.5\textwidth]{figures/decision_5d_online}
+\includegraphics[width = 0.5\textwidth]{figures/decision_5d_batch}
+\caption{On the decision boundry of the trained perceptron. On the left for the online algorithm on the right for the batch algorithm.}
+\label{perceptron:decision:5d}
+\end{figure}
 
 \subsubsection{Classification directly with image data}
 
