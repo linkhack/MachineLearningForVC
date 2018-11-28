@@ -1,11 +1,19 @@
 import LMS as lms
 import ClosedForm as cf
+import Setup as setup
 import random
 
 ########## 1.2.1
 
+#setup
+################
+setup = setup.Setup([0,5])
+################# 
+
+
+
 range_v = [0, 5]
-lms = lms.LMS(range_v, 0.1)
+lms = lms.LMS(setup.getTrainingData(), setup.getInputData(), setup.getOutputData())
 # init vector for w, and plot flag
 
 #random start w:
@@ -13,6 +21,7 @@ w = []
 for y in range(3):
     val = round(random.random(), 1)
     w.append(val)
+
 
 
 print('starting w :'+str(w))
@@ -35,8 +44,7 @@ result = lms.learn( w , 1000, 0.001 , 1 )
 
 
 # used closed form 
-t = cf.ClosedForm([0, 5])
-t.setSetup(lms.getSetup())
+t = cf.ClosedForm(setup.getTrainingData(), setup.getInputData(), setup.getOutputData())
 result_c = t.calcOptimalW(2)
 print('-----------------------')
 print("lms error: " + str(result[0]))
@@ -46,5 +54,5 @@ print("lms w: " + str(result[1]))
 print("cf w: " + str(result_c[1]))
 print('-----------------------')
 
-#show how overfitting impacts results
+#show how overfitting impacts
 #t.presentMode(9)

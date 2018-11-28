@@ -3,46 +3,11 @@ import matplotlib.pyplot as plt
 
 class ClosedForm:
     # Constructor
-    def __init__(self, range_vector=[0, 5]):
-        self.mu, self.sigma = 0, 4 # mean and standard deviation
-        self.input_vector = self.setup(range_vector)
-        self.output_vector = self.setupOutput(self.input_vector)
-        self.training_set = self.setupTraingingSet()    
-
-
-    def setup(self, range_vector=[0, 5], step=0.1):
-        input_vector = []
-
-        for x in self.my_range(range_vector[0], range_vector[1], step):
-            input_vector.append(x)
-
-        return np.array(input_vector)
-
-    def getSetup(self):
-        return [ self.mu, self.sigma, self.training_set]
-
-    def setSetup(self, setupData):
-        self.mu = setupData[0]
-        self.sigma = setupData[1]
-        self.training_set = setupData[2]
-
-    def my_range(self, start, end, step):        
-        while start <= end:
-            yield start
-            start += step
-
-    def setupOutput(self, input_vector):
-        return np.array([(2 * x ** 2 - 6 * x +1) for x in input_vector])
-
-    def setupTraingingSet(self):
-        select_index = []
-        for x in range(0, len(self.input_vector), 8):
-            select_index.append(x)
-
-        return np.array([self.input_vector[select_index], self.drawRandomValue(self.output_vector[select_index])])
-
-    def drawRandomValue(self, value ):
-        return np.array([x +  np.random.normal(self.mu, self.sigma) for x in value])
+    # Constructor
+    def __init__(self, training_set, input_vector,output_vector):        
+        self.training_set = training_set 
+        self.input_vector = input_vector
+        self.output_vector = output_vector
 
 
     def calcOptimalW(self,j): 
@@ -93,7 +58,8 @@ class ClosedForm:
         axis=[-1, 6, -100, 100]
         
         x_ = np.linspace(-1.0,6.0, num=50)
-    
+        
+        plt.figure()
         plt.plot(self.input_vector, self.output_vector, 'r-')
         plt.plot(self.training_set[0], self.training_set[1], 'b*')
         plt.axis(axis)
