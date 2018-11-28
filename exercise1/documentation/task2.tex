@@ -80,5 +80,22 @@ d               &        -2.58665078 -0.97237072  0.9121616       &         -3.0
 
 \newpage
 \subsection{Image Data}
-Unfortunately we did not finish in time, and we will not present this task here.
+In this part, we kept the same data set and target values than the previous experiment, but we decided to take another representation of the input data x. Indeed each x will be represented by a 29*29 matrix (an image of a circle) where each feature (i,j) is equal to 1 if (i−m1)2 +(j−m2)2−(3∗x)2 > 0 and 0 otherwise. Another important point is the addition of a noise not on the target value but on the features of the training set, with the 2 center's coordinates (m1,m2) following a normal distribution N(15,2).
+
+The first part of the experiment was to compute the best fitting weights in closed form, by using the pseudo-inverse of the matrix of the training set, which we previously homogenized. We then obtained a 842-array representing weights. With those weights, we computed the error between the target_values and the predicted_values for the training_set and we obtained an error of 0.
+          fig_part123_ts
+
+Then, we compared the target_values and the predicted_values for the whole data_set:
+            fig_part123_var2
+
+To see the importance of the noise, we did the experiment several times with varying the variance of the noise.
+          
+          fig_part123_var0  
+          fig_part123_var4
+          fig_part123_var9          could you remind the value of the variance (0,4,9) in the title of each image, pls? 
+
+It appeared that the bigger the variance was, the farer the predicted values were from the target values. One remarkable fact is that the 2 curves don't even cross at the training data x value, which can be explained by the fact that when testing the weights on the full data set, we also recompute the images of the training set.
+
+
+
 
