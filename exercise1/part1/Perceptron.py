@@ -1,6 +1,7 @@
 import exercise1.part1.PerceptronOnlineTraining as online_perceptron
 import exercise1.part1.Perceptron_batch_test as batch_perceptron
 import matplotlib.pyplot as plt
+import matplotlib.image as pltImg
 import numpy as np
 
 
@@ -47,19 +48,11 @@ def plot_decision_boundary(weights,data,targets, transformed):
 
 def plot_weights_full(weights):
     """plot the image of the weights for the full image perceptron"""
-    naugmented_weights =  weights[1:]
-    
-    x_axis = np.arange(0,28)
-    y_axis = np.arange(27,-1,-1)
-    
-    X_grid, Y_grid = np.meshgrid(x_axis,y_axis)
-    
-    X_grid = np.reshape(X_grid,[784,1])
-    Y_grid = np.reshape(Y_grid,[784,1])
-    
-    print(np.shape(naugmented_weights))
-    
-    plt.scatter(X_grid,Y_grid)#, c = naugmented_weights)
+    naugmented_weights = weights[1:]
+    image = np.reshape(naugmented_weights,(28,28))
+    img = plt.imshow(image,  cmap='gray')
+    plt.show()
+    return
     
     
 def confusion_matrix(digit,predicted_labels,labels):
