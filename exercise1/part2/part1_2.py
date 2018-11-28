@@ -10,7 +10,7 @@ import random
 setup = setup.Setup([0,5])
 ################# 
 
-
+setup.plotSetup
 
 range_v = [0, 5]
 lms = lms.LMS(setup.getTrainingData(), setup.getInputData(), setup.getOutputData())
