@@ -30,5 +30,5 @@ def update_weights(data_point, target, old_weights):
 
 def perc(weights, data):
     """Assumes the data was already augmented (homogeneous coordinates) training_set[0,:]=1"""
-    result = np.sign(np.dot(weights, data))  # @ is matrix multiplication
+    result = np.sign(np.dot(weights, data))  
     return result

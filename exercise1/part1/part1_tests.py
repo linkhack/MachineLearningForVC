@@ -12,8 +12,11 @@ def main():
     digits = [0, 7]
     training_set, training_targets = utils.get_digits(digits, 500)
 
+
     features = utils.calculate_features(training_set)
     properties = utils.collect_regionprops(training_set)
+
+    fig = utils.scatter_matrix_from_dict(properties, training_targets)
 
     features = utils.augment_data(features)
 
