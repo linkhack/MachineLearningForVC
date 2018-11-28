@@ -162,7 +162,7 @@ def augment_data(data):
     data_dimension = np.size(data, 0)
     nr_of_datapoints = np.size(data, 1)
     augmented_data = np.ones([data_dimension + 1, nr_of_datapoints])
-    augmented_data[:-1, :] = data
+    augmented_data[1:, :] = data
     return augmented_data
 
 def transform_features(data):
