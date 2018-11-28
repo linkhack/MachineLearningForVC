@@ -38,13 +38,32 @@ def main():
     print(str(correct_nr))
     correct_precentage = np.sum(correct) / np.size(features, 1)
     print("Correct percentage:" + str(correct_precentage))
+    
+       """part on the test set"""
+    
+    test_set,test_targets = utils.get_test_digits(digits, 200)
+    
+    test_features = []
+    for image in test_set:
+        feature_pixel = []  # image as a straight ligne
+        n = np.size(image, 0)
+        m = np.size(image, 1)
+        for i in range(0, n):
+            for j in range(0, m):
+                feature_pixel.append(image[i, j])
+        test_features.append(feature_pixel)  # add the image as a straigh list of pixel
 
-    plt.scatter(features[1, :], features[2, :], c=training_targets)
-    # fig = scatter_matrix_from_dict(properties, training_targets)
-    plt.show()
+    test_features = np.transpose(np.array(test_features))
 
-    fig = Perceptron.plot_decision_boundary(weights, training_set, training_targets,False)
-    fig.show()
+    test_result = Perceptron.perc(weights, test_features)
+    test_correct = np.equal(test_result, test_targets)
+    test_correct_nr = sum(test_correct)
+    print(str(test_correct_nr))
+    test_correct_precentage = np.sum(test_correct) / np.size(test_features, 1)
+    print("Correct percentage of test ser:" + str(test_correct_precentage))
+    
+    
+
     return
 
 

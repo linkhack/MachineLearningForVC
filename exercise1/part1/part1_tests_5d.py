@@ -24,7 +24,7 @@ def main():
 
     features = utils.transform_features(features)
 
-    weights = Perceptron.percTrain(features, targets=training_targets, online =False, maxIts=500000)[0]
+    weights = Perceptron.percTrain(features, targets=training_targets, online =False, maxIts=5000)[0]
     perc_result = Perceptron.perc(weights, features)
     correct = np.equal(perc_result, training_targets)
     correct_nr = sum(correct)
@@ -38,6 +38,23 @@ def main():
 
     fig = Perceptron.plot_decision_boundary(weights, training_set, training_targets,False)
     fig.show()
+    
+    """part on the test set"""
+    
+    test_set,test_targets = utils.get_test_digits(digits, 200)
+    
+    test_features = utils.calculate_features(test_set)
+    test_properties = utils.collect_regionprops(test_set)
+
+    test_features = utils.transform_features(test_features)
+    
+    test_result = Perceptron.perc(weights, test_features)
+    test_correct = np.equal(test_result, test_targets)
+    test_correct_nr = sum(test_correct)
+    print(str(test_correct_nr))
+    test_correct_precentage = np.sum(test_correct) / np.size(test_features, 1)
+    print("Correct percentage of test ser:" + str(test_correct_precentage))
+    
     return
 
 

@@ -22,6 +22,22 @@ def get_digits(digits, nr_samples_in_class=500):
     data_set = data_set_complete[indices, :, :]
     return data_set, targets
 
+def get_test_digits(digits, nr_samples_in_class=200):
+    data_set_complete = mnist.test_images()
+    targets_complete = mnist.test_labels()
+    digit1_indices = np.where(targets_complete == digits[0])[0]
+    digit2_indices = np.where(targets_complete == digits[1])[0]
+    nr_samples_in_class = np.min([nr_samples_in_class, np.size(digit1_indices), np.size(digit2_indices)])
+    digit1_indices = digit1_indices[:nr_samples_in_class]
+    digit2_indices = digit2_indices[:nr_samples_in_class]
+    # important if first all 1 then all -1 gives not a good result
+    indices = np.random.permutation(np.concatenate((digit1_indices, digit2_indices)))
+    unsigned_targets = targets_complete[indices]
+    targets = np.zeros(2 * nr_samples_in_class)
+    targets[unsigned_targets == digits[0]] = 1
+    targets[unsigned_targets == digits[1]] = -1
+    data_set = data_set_complete[indices, :, :]
+    return data_set, targets
 
 def calculate_features(image_array, props=None):
     # biggest contour or what?
