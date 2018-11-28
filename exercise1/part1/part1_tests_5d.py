@@ -16,7 +16,7 @@ import exercise1.part1.Perceptron as Perceptron
 
 
 def main():
-    digits = [0, 1]
+    digits = [1, 7]
     training_set, training_targets = utils.get_digits(digits, 500)
 
     features = utils.calculate_features(training_set)

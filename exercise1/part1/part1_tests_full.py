@@ -16,7 +16,7 @@ import exercise1.part1.Perceptron as Perceptron
 
 
 def main():
-    digits = [0, 1]
+    digits = [3, 7]
     training_set, training_targets = utils.get_digits(digits, 500)
     
     features = []
@@ -31,7 +31,7 @@ def main():
 
     features = np.transpose(np.array(features))
 
-    weights = Perceptron.percTrain(features, targets=training_targets, online =False, maxIts=5000)[0]
+    weights = Perceptron.percTrain(features, targets=training_targets, online =False, maxIts=5000)
     perc_result = Perceptron.perc(weights, features)
     correct = np.equal(perc_result, training_targets)
     correct_nr = sum(correct)
@@ -39,7 +39,7 @@ def main():
     correct_precentage = np.sum(correct) / np.size(features, 1)
     print("Correct percentage:" + str(correct_precentage))
     
-       """part on the test set"""
+    """part on the test set"""
     
     test_set,test_targets = utils.get_test_digits(digits, 200)
     
