@@ -67,7 +67,7 @@ class ImageSetup:
         else:   
             self.input_vector = self.setup(range_vector)
             self.output_vector = self.setupOutput(self.input_vector)
-            self.training_set = self.generateImages(self.input_vector)
+            self.training_set = self.generateImages(self.input_vector, random = False)
 
     def setup(self, range_vector=[0, 5], step=0.1):
         input_vector = []
@@ -123,13 +123,13 @@ class ImageSetup:
         for x in self.my_range(0, len(input), 8):
             select_index.append(x)
 
-        return self.generateImages(input[select_index])        
+        return self.generateImages(input[select_index], random = True)        
 
-    def generateImages(self,input):
+    def generateImages(self,input, random):
         images = []
         for x in input:
             y_i = (2 * (x ** 2) - (6 * x) +1)
-            img = np.array([ self.generateImage(x), y_i , x ])
+            img = np.array([ self.generateImage(x,random), y_i , x ])
 
             images.append(img )
 
@@ -138,10 +138,15 @@ class ImageSetup:
 
 
 
-    def generateImage(self, x):
+    def generateImage(self, x,random):
         d = 29
-        m_1 = np.random.normal(15, 2)
-        m_2 = np.random.normal(15, 2)
+        if random:
+            m_1 = np.random.normal(15, 2)
+            m_2 = np.random.normal(15, 2)
+        else:
+            m_1 = 15
+            m_2 = 15
+
 
         image = np.zeros([d,d])
         value = 0

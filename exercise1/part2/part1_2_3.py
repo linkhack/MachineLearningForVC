@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 
 #setup
 ################
-setup = setup.ImageSetup([0,5])
+setup_training = setup.ImageSetup([0,5])
 ################# 
 #setup.plotImages()
 
-t = cf.ClosedForm(setup.getAugmentedData(), setup.getInputData(), setup.getOutputData())
-imgData = setup.getAugmentedData()
+t = cf.ClosedForm(setup_training.getAugmentedData(), setup_training.getInputData(), setup_training.getOutputData())
+imgData = setup_training.getAugmentedData()
 print(imgData[1])
 result_c = t.calcOptimalImageW( imgData[0], imgData[1] )
 
@@ -31,3 +31,16 @@ x_axis = np.arange(0,5,0.8)
 
 plt.plot(x_axis,label)
 plt.plot(x_axis,predicted_label)
+
+############# test
+full_setup = setup.ImageSetup([0,5], case = 1)
+
+imgfull_set = full_setup.getAugmentedData()
+
+full_label = imgfull_set[1]
+full_predicted_label = np.transpose(imgfull_set[0]).dot(weights)
+
+x_axisfull = np.arange(0,5.1,0.1)
+
+plt.plot(x_axisfull,full_label)
+plt.plot(x_axisfull, full_predicted_label)
