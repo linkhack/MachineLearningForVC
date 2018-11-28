@@ -36,10 +36,12 @@ def plot_decision_boundary(weights,data,targets, transformed):
     else:
         # transformed_features = np.array([[[1,X_grid[i,j], Y_grid[i,j]] for j in range(500)] for i in range(500)])
         transformed_features = np.array(([np.ones((500,500)),X_grid,Y_grid]))
-    result = np.transpose(weights)@transformed_features
-    fig = plt.contour([X_grid,Y_grid],result,0);
-    fig.plot(data[1,:],data[2,:])
-    fig.show()
+    
+    result = np.sum(np.array([weights[k]*transformed_features[k,:,:] for k in range(0,dim_data)]),0) #sum along the 0_dimension
+
+    fig = plt.contour(X_grid,Y_grid,result,0);
+    plt.scatter(data[1,:],data[2,:], c = targets)
+#    fig.show()
 
     return fig
 

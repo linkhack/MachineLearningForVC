@@ -23,6 +23,7 @@ def main():
     properties = utils.collect_regionprops(training_set)
 
     features = utils.transform_features(features)
+    print(np.shape(features))
 
     weights = Perceptron.percTrain(features, targets=training_targets, online =True, maxIts=20000)
     perc_result = Perceptron.perc(weights, features)
@@ -32,12 +33,12 @@ def main():
     correct_precentage = np.sum(correct) / np.size(features, 1)
     print("Correct percentage:" + str(correct_precentage))
 
-    plt.scatter(features[1, :], features[2, :], c=training_targets)
-    # fig = scatter_matrix_from_dict(properties, training_targets)
-    plt.show()
+#    plt.scatter(features[1, :], features[2, :], c=training_targets)
+#    # fig = scatter_matrix_from_dict(properties, training_targets)
+#    plt.show()
 
-    fig = Perceptron.plot_decision_boundary(weights, training_set, training_targets,True)
-    fig.show()
+    fig = Perceptron.plot_decision_boundary(weights, features, training_targets,True)
+#    fig.show()
     
     """part on the test set"""
     
