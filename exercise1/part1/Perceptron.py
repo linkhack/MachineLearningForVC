@@ -45,6 +45,74 @@ def plot_decision_boundary(weights,data,targets, transformed):
 
     return fig
 
+def plot_weights_full(weights):
+    """plot the image of the weights for the full image perceptron"""
+    naugmented_weights =  weights[1:]
+    
+    x_axis = np.arange(0,28)
+    y_axis = np.arange(27,-1,-1)
+    
+    X_grid, Y_grid = np.meshgrid(x_axis,y_axis)
+    
+    X_grid = np.reshape(X_grid,[784,1])
+    Y_grid = np.reshape(Y_grid,[784,1])
+    
+    print(np.shape(naugmented_weights))
+    
+    plt.scatter(X_grid,Y_grid)#, c = naugmented_weights)
+    
+    
+def confusion_matrix(digit,predicted_labels,labels):
+    """plot the confusion matrix of an experiment """
+    nbr_of_data = np.size(labels)
+    
+    Correct_value_class1 = 0 
+    False_value_class1 = 0
+    nbr_class1 = 0
+    
+    Correct_value_class2 = 0 
+    False_value_class2 = 0
+    nbr_class2 = 0
+    
+    for i in range(0,nbr_of_data):
+        predicted_value = predicted_labels[i]
+        value = labels[i]
+        
+        if predicted_value == value:
+            if value == 1:
+                Correct_value_class1 +=1
+                nbr_class1 += 1
+            else:
+                Correct_value_class2 +=1
+                nbr_class2 += 1
+        else:
+            if value == 1:
+                False_value_class1 += 1
+                nbr_class1 += 1
+            else:
+                False_value_class2 += 1
+                nbr_class2 += 1
+                
+    perc_Correct1 = Correct_value_class1/nbr_class1
+    perc_false1 =   False_value_class1/nbr_class1
+    
+    perc_Correct2 = Correct_value_class2/nbr_class2
+    perc_false2 =   False_value_class2/nbr_class2
+    
+#    x1 = [perc_Correct1,perc_Correct2]
+#    x2 = [perc_false1,perc_false2]
+#    bins =[0.5,1.5]
+#    
+#    plt.hist([x1,x2], bins = bins, color = ['green','red'], label=['Correct','Wrong'])
+#    plt.xlabel('class')
+#    plt.ylabel('percentage')
+#    
+#    plt.show()
+      
+    
+    
+    
+
 
 
 

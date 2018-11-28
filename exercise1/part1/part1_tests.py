@@ -9,7 +9,7 @@ import exercise1.part1.Perceptron as Perceptron
 
 
 def main():
-    digits = [0, 1]
+    digits = [0, 7]
     training_set, training_targets = utils.get_digits(digits, 500)
 
     features = utils.calculate_features(training_set)
@@ -47,6 +47,9 @@ def main():
     print(str(test_correct_nr))
     test_correct_precentage = np.sum(test_correct) / np.size(test_features, 1)
     print("Correct percentage of test ser:" + str(test_correct_precentage))
+    
+
+    
     return
 
 

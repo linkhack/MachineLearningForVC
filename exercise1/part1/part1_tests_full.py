@@ -16,12 +16,12 @@ import exercise1.part1.Perceptron as Perceptron
 
 
 def main():
-    digits = [3, 7]
+    digits = [0, 7]
     training_set, training_targets = utils.get_digits(digits, 500)
     
     features = []
     for image in training_set:
-        feature_pixel = []  # image as a straight ligne
+        feature_pixel = [1]  # image as a straight ligne
         n = np.size(image, 0)
         m = np.size(image, 1)
         for i in range(0, n):
@@ -39,13 +39,15 @@ def main():
     correct_precentage = np.sum(correct) / np.size(features, 1)
     print("Correct percentage:" + str(correct_precentage))
     
+    Perceptron.plot_weights_full(weights)
+    
     """part on the test set"""
     
     test_set,test_targets = utils.get_test_digits(digits, 200)
     
     test_features = []
     for image in test_set:
-        feature_pixel = []  # image as a straight ligne
+        feature_pixel = [1]  # image as a straight ligne
         n = np.size(image, 0)
         m = np.size(image, 1)
         for i in range(0, n):
@@ -60,7 +62,7 @@ def main():
     test_correct_nr = sum(test_correct)
     print(str(test_correct_nr))
     test_correct_precentage = np.sum(test_correct) / np.size(test_features, 1)
-    print("Correct percentage of test ser:" + str(test_correct_precentage))
+    print("Correct percentage of test set:" + str(test_correct_precentage))
     
     
 

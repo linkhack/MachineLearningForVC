@@ -16,7 +16,7 @@ import exercise1.part1.Perceptron as Perceptron
 
 
 def main():
-    digits = [1, 7]
+    digits = [0, 7]
     training_set, training_targets = utils.get_digits(digits, 500)
 
     features = utils.calculate_features(training_set)
@@ -25,7 +25,7 @@ def main():
     features = utils.transform_features(features)
     print(np.shape(features))
 
-    weights = Perceptron.percTrain(features, targets=training_targets, online =True, maxIts=20000)
+    weights = Perceptron.percTrain(features, targets=training_targets, online =True, maxIts=200000)
     perc_result = Perceptron.perc(weights, features)
     correct = np.equal(perc_result, training_targets)
     correct_nr = sum(correct)
