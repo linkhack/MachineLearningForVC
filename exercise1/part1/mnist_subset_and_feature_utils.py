@@ -4,6 +4,10 @@ import cv2
 import itertools
 import matplotlib.pyplot as plt
 
+"""
+ Author: Link
+"""
+
 
 def get_digits(digits, nr_samples_in_class=500):
     data_set_complete = mnist.train_images()

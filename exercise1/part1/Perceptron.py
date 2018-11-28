@@ -3,7 +3,9 @@ import exercise1.part1.Perceptron_batch_test as batch_perceptron
 import matplotlib.pyplot as plt
 import matplotlib.image as pltImg
 import numpy as np
-
+"""
+ Author: Link
+"""
 
 def perc(weights, data):
     """Assumes the data was already augmented (homogeneous coordinates) training_set[0,:]=1"""
@@ -42,7 +44,7 @@ def plot_decision_boundary(weights,data,targets, transformed):
 
     fig = plt.contour(X_grid,Y_grid,result,0);
     plt.scatter(data[1,:],data[2,:], c = targets)
-#    fig.show()
+    plt.show()
 
     return fig
 
@@ -58,39 +60,20 @@ def plot_weights_full(weights):
 def confusion_matrix(digit,predicted_labels,labels):
     """plot the confusion matrix of an experiment """
     nbr_of_data = np.size(labels)
-    
-    Correct_value_class1 = 0 
-    False_value_class1 = 0
-    nbr_class1 = 0
-    
-    Correct_value_class2 = 0 
-    False_value_class2 = 0
-    nbr_class2 = 0
-    
-    for i in range(0,nbr_of_data):
-        predicted_value = predicted_labels[i]
-        value = labels[i]
-        
-        if predicted_value == value:
-            if value == 1:
-                Correct_value_class1 +=1
-                nbr_class1 += 1
-            else:
-                Correct_value_class2 +=1
-                nbr_class2 += 1
-        else:
-            if value == 1:
-                False_value_class1 += 1
-                nbr_class1 += 1
-            else:
-                False_value_class2 += 1
-                nbr_class2 += 1
-                
-    perc_Correct1 = Correct_value_class1/nbr_class1
-    perc_false1 =   False_value_class1/nbr_class1
-    
-    perc_Correct2 = Correct_value_class2/nbr_class2
-    perc_false2 =   False_value_class2/nbr_class2
+
+    nr_per_class = nbr_of_data/2
+
+    target1 = labels == 1
+    target2 = labels == -1
+
+    correct_target_1 = predicted_labels[target1] == 1
+    wrong_target_1 = predicted_labels[target1] == -1
+    correct_target_2 = predicted_labels[target2] == -1
+    wrong_target_2 = predicted_labels[target2] == 1
+
+    print(f"Digit: {digit[0]}: Correct = {np.sum(correct_target_1)} Wrong: {np.sum(wrong_target_1)}")
+    print(f"Digit: {digit[1]}: Correct = {np.sum(correct_target_2)} Wrong: {np.sum(wrong_target_2)}")
+
     
 #    x1 = [perc_Correct1,perc_Correct2]
 #    x2 = [perc_false1,perc_false2]

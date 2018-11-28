@@ -1,5 +1,9 @@
 import numpy as np
 
+"""
+ Author: Link
+"""
+
 
 def perceptron_online_training(training_set, targets, max_iterations):
     """Assumes the data was already augmented (homogeneous coordinates) training_set[0,:]=1"""

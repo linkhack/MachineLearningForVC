@@ -37,12 +37,12 @@ def main():
 #    # fig = scatter_matrix_from_dict(properties, training_targets)
 #    plt.show()
 
-    fig = Perceptron.plot_decision_boundary(weights, features, training_targets,True)
+    Perceptron.plot_decision_boundary(weights, features, training_targets,True)
 #    fig.show()
     
     """part on the test set"""
     
-    test_set,test_targets = utils.get_test_digits(digits, 200)
+    test_set, test_targets = utils.get_test_digits(digits, 200)
     
     test_features = utils.calculate_features(test_set)
     test_properties = utils.collect_regionprops(test_set)
@@ -55,7 +55,8 @@ def main():
     print(str(test_correct_nr))
     test_correct_precentage = np.sum(test_correct) / np.size(test_features, 1)
     print("Correct percentage of test ser:" + str(test_correct_precentage))
-    
+
+    Perceptron.confusion_matrix(digits,test_result,test_targets)
     return
 
 

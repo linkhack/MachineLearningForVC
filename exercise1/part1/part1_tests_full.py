@@ -2,7 +2,7 @@
 """
 Created on Wed Nov 28 00:14:27 2018
 
-@author: arnau
+@author: arnau link
 """
 
 import numpy as np
@@ -58,7 +58,7 @@ def main():
     test_correct_precentage = np.sum(test_correct) / np.size(test_features, 1)
     print("Correct percentage of test set:" + str(test_correct_precentage))
 
-    Perceptron.plot_weights_full(weights)
+    Perceptron.confusion_matrix(digits,test_result,test_targets)
     return
 
 
