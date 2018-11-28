@@ -30,6 +30,7 @@ print('starting w :'+str(w))
 # 1000 iterations,
 # 0.001 as gamma
 # plot output (every 75th iteration)
+#
 result = lms.learn( w , 1000, 0.001 , 1 )
 
 # 500 iterations,
@@ -56,3 +57,4 @@ print('-----------------------')
 
 #show how overfitting impacts
 #t.presentMode(9)
+

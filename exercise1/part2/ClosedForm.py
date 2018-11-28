@@ -3,29 +3,49 @@ import matplotlib.pyplot as plt
 
 class ClosedForm:
     # Constructor
-    # Constructor
     def __init__(self, training_set, input_vector,output_vector):        
         self.training_set = training_set 
         self.input_vector = input_vector
         self.output_vector = output_vector
 
+    def calcOptimalImageW(self, x , t):    
+        return
 
-    def calcOptimalW(self,j): 
-        j= j+1       
+        j= 29*29+1               
         a = np.zeros([j,j])
-        B = np.zeros(j)
-        x = self.training_set[0]         
-        t = self.training_set[1]
+        B = np.zeros(j)        
+        
 
         for i in range(j):
             for k in range(j):               
                 a[i][k] = self.afit(x, k+i)
 
-            B[i] = self.bfit(x,self.training_set[1],i)
+            B[i] = self.bfit(x, t ,i)
     
         w_ = np.linalg.solve(a, B)    
         
         w_phi = np.array( [ self.fit(x_value, w_) for x_value in x] )            
+        error = np.sum((t - w_phi) ** 2 )
+
+        return [error, w_]  
+
+    def calcOptimalW(self,j): 
+        j= j+1
+        
+        X = self.training_set[0]         
+        t = self.training_set[1]
+        a = np.zeros([len(t),j])
+        
+        i= 0
+        for x in X:
+            for k in range(j):
+                a[i][k] = x ** k                                  
+            i = i+1        
+    
+        inv= np.linalg.pinv(a)
+
+        w_ = inv.dot(t)    
+        w_phi = np.array( [ self.fit(x_value, w_) for x_value in X] )            
         error = np.sum((t - w_phi) ** 2 )
 
         return [error, w_]        
