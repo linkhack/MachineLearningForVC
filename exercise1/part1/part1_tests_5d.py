@@ -36,7 +36,7 @@ def main():
     # fig = scatter_matrix_from_dict(properties, training_targets)
     plt.show()
 
-    fig = Perceptron.plot_decision_boundary(weights, training_set, training_targets,False)
+    fig = Perceptron.plot_decision_boundary(weights, training_set, training_targets,True)
     fig.show()
     
     """part on the test set"""
