@@ -4,6 +4,10 @@ import cv2
 import itertools
 import matplotlib.pyplot as plt
 
+"""
+ Author: Link
+"""
+
 
 def get_digits(digits, nr_samples_in_class=500):
     data_set_complete = mnist.train_images()
@@ -22,6 +26,22 @@ def get_digits(digits, nr_samples_in_class=500):
     data_set = data_set_complete[indices, :, :]
     return data_set, targets
 
+def get_test_digits(digits, nr_samples_in_class=200):
+    data_set_complete = mnist.test_images()
+    targets_complete = mnist.test_labels()
+    digit1_indices = np.where(targets_complete == digits[0])[0]
+    digit2_indices = np.where(targets_complete == digits[1])[0]
+    nr_samples_in_class = np.min([nr_samples_in_class, np.size(digit1_indices), np.size(digit2_indices)])
+    digit1_indices = digit1_indices[:nr_samples_in_class]
+    digit2_indices = digit2_indices[:nr_samples_in_class]
+    # important if first all 1 then all -1 gives not a good result
+    indices = np.random.permutation(np.concatenate((digit1_indices, digit2_indices)))
+    unsigned_targets = targets_complete[indices]
+    targets = np.zeros(2 * nr_samples_in_class)
+    targets[unsigned_targets == digits[0]] = 1
+    targets[unsigned_targets == digits[1]] = -1
+    data_set = data_set_complete[indices, :, :]
+    return data_set, targets
 
 def calculate_features(image_array, props=None):
     # biggest contour or what?
@@ -146,18 +166,17 @@ def augment_data(data):
     data_dimension = np.size(data, 0)
     nr_of_datapoints = np.size(data, 1)
     augmented_data = np.ones([data_dimension + 1, nr_of_datapoints])
-    augmented_data[:-1, :] = data
+    augmented_data[1:, :] = data
     return augmented_data
 
 def transform_features(data):
     """ Transform features (x,y) to (1,x,y,x**2,y**2,x*y) """
     nr_of_datapoints = np.size(data,1)
     transformed_features = np.ones([6, nr_of_datapoints])
-    compt = 0
-    for features in data:
-        x = features[0]
-        y = features[1]
-        transformed_features[:, compt] = [1,x,y,x**2,y**2,x*y]
-        compt +=1
+    for i in range (0,nr_of_datapoints):
+        x = data[0,i]
+        y = data[1,i]
+        transformed_features[:, i] = [1,x,y,x**2,y**2,x*y]
+
         
     return transformed_features
