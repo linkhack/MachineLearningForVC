@@ -63,7 +63,7 @@ For the batch training algorithm evaluated on the same test set we got 383 corre
   Digit 7 & 4 & 200 \\
 \end{tabular}
 
-The corresponding decision boundries are shown in figure \ref{perceptron:decision:5d}. It's not very surprising that the feature transform doesn't help the classification. as there are yellow points, corresponding to the digit 0, inbetween purple points. Such a simple feature transform can't separate those points, as the new decision boundry is just a quadratic.
+The corresponding decision boundaries are shown in figure \ref{perceptron:decision:5d}. It's not very surprising that the feature transform doesn't help the classification. as there are yellow points, corresponding to the digit 0, in between purple points. Such a simple feature transform can't separate those points, as the new decision boundary is just a quadratic.
 
 \begin{figure}
 \includegraphics[width = 0.5\textwidth]{figures/decision_5d_online}
@@ -73,7 +73,7 @@ The corresponding decision boundries are shown in figure \ref{perceptron:decisio
 \end{figure}
 
 \subsubsection{Classification directly with image data}
-We then tested the perceptron algorithm by using the image data as direct input. This is done by vectorizing the image into one vector. Instead of showing the corresponding decision boundry, we will visualize the calculated weight vector of the perceptron this is shown in figure \ref{perceptron:weights} for both the online and the batch algorithm.
+We then tested the perceptron algorithm by using the image data as direct input. This is done by vectorizing the image into one vector. Instead of showing the corresponding decision boundary, we will visualize the calculated weight vector of the perceptron this is shown in figure \ref{perceptron:weights} for both the online and the batch algorithm.
 
 We see that the weights resemble a bright 0 overlayed over a dark 7. This follows from the fact, that the perceptron tries to give images resembling a 7 a positive value and images resembling a 0 a negative value. We can also see that this is much clearer in the batch algorithm. We think this follows from the fact, that in the online algorithm the last data point observed has a big influence on the resulting weight vectors. On the other hand, as we compare a weight vector over the whole data set in the batch algorithm, each singular data point has much less relative influence on the resulting weights.
 
@@ -82,7 +82,7 @@ Moreover, in this experiment the training set was linearly separable. And we got
 \begin{figure}
 \includegraphics[width = 0.5\textwidth]{figures/weights_image_online}
 \includegraphics[width = 0.5\textwidth]{figures/weights_image_batch}
-\caption{On the decision boundry of the trained perceptron. On the left for the online algorithm on the right for the batch algorithm.}
+\caption{On the decision boundary of the trained perceptron. On the left for the online algorithm on the right for the batch algorithm.}
 \label{perceptron:decision:5d}
 \end{figure}
 
@@ -105,7 +105,7 @@ For the batch training algorithm evaluated on the same test set we got 398 corre
 \end{tabular}
 
 \subsection{Performance}
-In the following table we summerize the performance of each experiment. We only report the error rate, i.e. ratio of wrongly classified images, because the confusion matrices are already given above. We evaluated the perceptrons on a test set with 200 images of each class.
+In the following table we summarize the performance of each experiment. We only report the error rate, i.e. ratio of wrongly classified images, because the confusion matrices are already given above. We evaluated the perceptrons on a test set with 200 images of each class.
 
 
 \begin{tabular}{ l | c | r }

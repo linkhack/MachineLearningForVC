@@ -376,3 +376,5 @@ TSWLatexianTemp*
 # standalone packages
 *.sta
 exercise1/documentation/assignment1.pdf
+exercise1/documentation/assignment1.pdf
+*.pdf
