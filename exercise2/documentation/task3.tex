@@ -1,0 +1,110 @@
+\subsection{LMS vs. closed Form}
+We followed the instructions and used the  function below with $G = 6$ to determine our $y$ values for the experimental setup.
+\begin{equation}
+f(x) = 2x^2 - Gx +1
+\end{equation}
+
+
+\begin{figure}[!h]
+\begin{center}
+\centering
+\includegraphics[width=5cm]{figures/setup.png}
+\end{center}
+\caption{ Setup and an example of $t_i$ values with additional noise}
+\end{figure}
+
+\subsubsection{What is the resulting weight Vector when using the LMS rule?}
+We implemented an online LMS learning rule for regression to determine useful weights to fit the curve. Figure \ref{fig:lms} shows four runs with randomised training data. As we can see the fitted curve is moved towards the original curve with each iteration. 
+
+\begin{figure}[!h]
+\begin{center}
+\centering
+\subfigure[]{\includegraphics[width=5cm]{figures/fig_lms_1.png}}
+\subfigure[]{\includegraphics[width=5cm]{figures/fig_lms_2.png}}
+\subfigure[]{\includegraphics[width=5cm]{figures/fig_lms_3.png}}
+\subfigure[]{\includegraphics[width=5cm]{figures/fig_lms_4.png}}
+\end{center}
+\caption{\label{fig:lms} Visualization of the learning process of \textbf{LMS}}
+\end{figure}
+
+
+\subsubsection{How can you determine the optimal $w*$ in closed form?  Compare $w*$ with the outcome of the {LMS}-rule training}
+We used Moore-Penrose-Inverse to minify the sum of squares error. As displayed the in the Tables, \ref{tab:error} and \ref{tab:weights} we can see the resulting weights and the calculated errors. We can see that the error rate for our four examples with CF are all lower compared to LMS, without much surprise.
+
+\begin{figure}[!h]
+\begin{center}
+\centering
+\subfigure[]{\includegraphics[width=5cm]{figures/fig_cf_1.png}}
+\subfigure[]{\includegraphics[width=5cm]{figures/fig_cf_2.png}}
+\subfigure[]{\includegraphics[width=5cm]{figures/fig_cf_3.png}}
+\subfigure[]{\includegraphics[width=5cm]{figures/fig_cf_4.png}}
+\end{center}
+\caption{\label{fig:cf}the same training data as in figure, however this time solved in closed form (\textbf{CF}) }
+\end{figure}
+
+
+\begin{table}[!h]
+\begin{tabular}{lll}
+\textbf{Figure} & \textbf{LMS} & \textbf{CF} \\
+a               &       97.09004286828198       &     71.03243449830224       \\
+b               &      112.43543529868002        &     97.82006516766448          \\
+c               &        109.4839763954856      &        84.46023189949588         \\
+d               &        61.164485036889054      &         47.10797373501289        \\
+\end{tabular}
+\caption{\label{tab:error} error comparisons between{LMS} and {CF}}
+\end{table}
+
+\begin{table}[]
+\begin{tabular}{lll}
+\textbf{Figure} & \textbf{LMS} & \textbf{CF} \\
+a               &        2.79641366 -4.06370085  1.6057828       &     6.10503808 -6.93083294  2.04038233       \\
+b               &      0.90857717 -6.42409915  2.36363687        &     1.57854501 -8.9662967   2.8358482          \\
+c               &        0.25694124 -4.13859362  1.69469808      &        2.59983553 -6.64808401  2.1588638         \\
+d               &        -2.58665078 -0.97237072  0.9121616       &         -3.01226058 -0.92406774  0.96261322        \\
+\end{tabular}
+\caption{\label{tab:weights}resulting weights{LMS} and {CF}}
+\end{table}
+
+
+\subsubsection{Influence of $\gamma$ }
+ $\gamma$ has influence over the fact if the algorithm can converge in the end. In case $gamma$ is set too high, new values get too much weight, thus 'overriding' older ones and introducing change to quickly. See Figure \ref {fig:gamma} for an example.
+
+\begin{figure}[h]
+\begin{center}
+\centering
+\includegraphics[width=5cm]{figures/fig_gamma.png}
+\end{center}
+\caption{\label{fig:gamma} $\gamma$ has been chosen too high }
+\end{figure}
+
+
+\newpage
+\subsection{Image Data}
+In this part, we kept the same data set and target values than the previous experiment, but we decided to take another representation of the input data $X$. Instead each $x$ will be represented by a $29\times29$ matrix (an image of a circle) where each entry $(i,j)$ is equal to $1$ if $(i-m_1)^2+(j-m_2)^2-(3x)^2 \> 0$ and $0$ otherwise. Another important point is the addition of a noise not on the target value but on the features of the training set, with the 2 center's coordinates$ (m1,m2)$ following a normal distribution $\mathcal{N}(15,2)$.
+
+The first part of the experiment was to compute the best fitting weights in closed form, by using the pseudo-inverse of the matrix of the training set, which we previously homogenized. We vectorized the transform $\Phi{X}$ and set the matrix $X_ij = \Phi_j(x_i)$. We then obtained a 842-array representing weights. With those weights, we computed the error between the target values and the predicted values for the trainin set and we obtained an error of 0.
+\begin{figure}  
+\centering
+	\includegraphics[width = 0.3\textwidth]{figures/fig_part123_ts}
+	\includegraphics[width = 0.3\textwidth]{figures/fig_part123_var2}
+	\caption{Predicted values on the training set and comparison on whole range}
+	\label{reg:test:predicted}
+\end{figure}
+Then, we compared the target values and the predicted values for the whole data set. The results are shown in figure \ref{reg:test:predicted}.
+	
+
+To see the importance of the noise, we did the experiment several times with varying the variance of the noise.
+ \begin{figure}  
+	
+		\includegraphics[width = 0.3\textwidth]{figures/fig_part123_var0}
+		\includegraphics[width = 0.3\textwidth]{figures/fig_part123_var4}
+		\includegraphics[width = 0.3\textwidth]{figures/fig_part123_var0}
+	\caption{Influence of the variance on the error of the regression. Variance of 0, 4 and 9 is used from left to right.}
+\end{figure}                 
+
+
+It appeared that the bigger the variance was, the farer the predicted values were from the target values. One remarkable fact is that the 2 curves don't even cross at the training data x value, which can be explained by the fact that when testing the weights on the full data set, we also recompute the images of the training set.
+
+
+
+
