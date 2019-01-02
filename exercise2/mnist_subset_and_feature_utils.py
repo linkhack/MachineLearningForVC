@@ -9,22 +9,39 @@ import matplotlib.pyplot as plt
 """
 
 
-def get_digits(digits, nr_samples_in_class=500):
+def get_digits(digits, nr_samples_in_class=35, nr_sets=1):
     data_set_complete = mnist.train_images()
     targets_complete = mnist.train_labels()
     digit1_indices = np.where(targets_complete == digits[0])[0]
     digit2_indices = np.where(targets_complete == digits[1])[0]
-    nr_samples_in_class = np.min([nr_samples_in_class, np.size(digit1_indices), np.size(digit2_indices)])
-    digit1_indices = digit1_indices[:nr_samples_in_class]
-    digit2_indices = digit2_indices[:nr_samples_in_class]
+    
+    indices_1 =[]
+    indices_2 =[] 
+    for i in range(0,nr_sets):
+        dig_indics_1 =digit1_indices[i*nr_samples_in_class:(i+1)*nr_samples_in_class]
+        dig_indics_2 =digit2_indices[i*nr_samples_in_class:(i+1)*nr_samples_in_class]
+        indices_1.append(dig_indics_1)
+        indices_2.append(dig_indics_2)
+    
+    
     # important if first all 1 then all -1 gives not a good result
-    indices = np.random.permutation(np.concatenate((digit1_indices, digit2_indices)))
-    unsigned_targets = targets_complete[indices]
-    targets = np.zeros(2 * nr_samples_in_class)
-    targets[unsigned_targets == digits[0]] = 1
-    targets[unsigned_targets == digits[1]] = -1
-    data_set = data_set_complete[indices, :, :]
-    return data_set, targets
+    indices =[]
+    for i in range(0,nr_sets):
+        indices.append(np.random.permutation(np.concatenate((indices_1[i], indices_2[i]))))
+        
+    data_sets= []
+    targets_sets = []
+    for i in range(0,nr_sets):
+        data=data_set_complete[indices[i],:,:]
+        targets = np.zeros(2 * nr_samples_in_class)
+        unsigned_targets = targets_complete[indices[i]]
+        targets[unsigned_targets == digits[0]] = 1
+        targets[unsigned_targets == digits[1]] = -1
+        
+        targets_sets.append(targets)
+        data_sets.append(data)
+        
+    return data_sets, targets_sets
 
 def get_test_digits(digits, nr_samples_in_class=200):
     data_set_complete = mnist.test_images()

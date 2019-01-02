@@ -44,4 +44,10 @@ def plot_SVM(alpha,w0,positions,X,t,Xnew,tnew,kernel=kernel.linearkernel):
     plt.show()
     
     return
+
+def error_rate(tpred,target):
+    """return the error rate """
+    nSamples= np.size(target)
+    return np.sum((target-tpred)**2/(4*nSamples))
+    
     
