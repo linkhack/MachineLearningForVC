@@ -75,8 +75,7 @@ class SVM:
     
     def discriminant(self,alpha,w0,X,t,Xnew,kernel=kernel.linearkernel):
         """discriminent function applied on a set of vector in colomn represented by Xnew using the trained on X,t SVM"""
-        print(alpha)
-        print(w0)
+
         nFeatures, nSamples= X.shape
         nFeatures, nNew = Xnew.shape # not sure about the shape of Xnew: vector are said to be in column
         

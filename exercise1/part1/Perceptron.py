@@ -12,6 +12,14 @@ def perc(weights, data):
     result = np.sign(np.dot(weights, data))  # @ is matrix multiplication
     return result
 
+def perc_multi(weights, data):
+    """Assumes the data was already augmented (homogeneous coordinates) training_set[0,:]=1"""
+    dim, nbr_samples = data.shape
+    predict = np.zeros(nbr_samples)
+    for i in range(nbr_samples):
+        predict[i]=perc(weights, data[:,i])
+    return(predict)
+
 
 def percTrain(data, targets, maxIts, online):
     """Assumes the data was already augmented (homogeneous coordinates) training_set[0,:]=1"""
