@@ -197,3 +197,13 @@ def transform_features(data):
 
         
     return transformed_features
+
+def transform_images(image_datas):
+    """transform a list of images into a matrix where each column correspond to an image"""
+    nbr,n,m = np.shape(image_datas)
+    X = np.zeros([n*m,nbr])
+    for i in range(nbr):
+        image = np.reshape(image_datas[i,:,:],n*m)#transformation into a column vector
+        X[:,i]= image
+    return(X)
+        
