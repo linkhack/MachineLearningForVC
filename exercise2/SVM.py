@@ -25,12 +25,12 @@ class SVM:
         self.kernel = kernel
 
         # get some sizes
-        nSamples, nFeatures = x.shape
+        nFeatures, nSamples = x.shape
 
         K = np.zeros((nSamples, nSamples))
         for i in range(nSamples):
             for j in range(nSamples):
-                K[i, j] = self.kernel(x[i], x[j])
+                K[i, j] = self.kernel(x[:,i], x[:,j])
 
         # FYI tc='d' specifies double as matrix content type!
 
@@ -61,23 +61,23 @@ class SVM:
         #TODO: extract support vectors etc.
         sv_position = positions[0] # we choose the first vector of the list of sv
 
-        w0 = t[sv_position] -sum([alpha[i]*t[i]*K[i,sv_position] for i in range(0,nSamples)])
+        w0 = t[sv_position] -np.sum(np.array([alpha[i]*t[i]*K[i,sv_position] for i in range(0,nSamples)]))
 
         return [alpha, w0]
     
-    def discriminant(alpha,w0,X,t,Xnew):
+    def discriminant(alpha,w0,X,t,Xnew,kernel=kernel.linearkernel):
         """discriminent function applied on a set of vector in colomn represented by Xnew using the trained on X,t SVM"""
-        nSample, nFeatures= X.shape
-        nNew, nFeatures = Xnew.shape # not sure about the shape of Xnew: vector are said to be in column
+        nFeatures, nSamples= X.shape
+        nFeatures, nNew = Xnew.shape # not sure about the shape of Xnew: vector are said to be in column
         
-        K = np.zeros([nSample,nNew])
+        K = np.zeros([nSamples,nNew])
         for i in range(nSamples):
             for j in range(nNew):
-                K[i, j] = self.kernel(X[i], Xnew[j])
+                K[i, j] = kernel(X[:,i], Xnew[:,j])
                 
         y = np.zeros(nNew)
         for i in range(nNew):
-            target = np.sign(w0 +sum([alpha[j]*t[j]*K[j,i]]))
+            target = np.sign(w0 +np.sum(np.array([alpha[j]*t[j]*K[j,i] for j in range(0,nSamples)])))
             y[i] = target
             
         return y
