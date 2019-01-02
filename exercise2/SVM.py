@@ -52,11 +52,32 @@ class SVM:
         alpha = np.ravel(solution['x'])
 
         # Support vectors have non zero lagrange multipliers
-        sv = alpha > 1e-5  # some small threshold
+        threshold = 1e-5 # some small threshold
+        sv = alpha > threshold
+        positions = np.where(alpha>threshold)# indices of actives data set point
+        
 
 
         #TODO: extract support vectors etc.
+        sv_position = positions[0] # we choose the first vector of the list of sv
 
-        w0 = []
+        w0 = t[sv_position] -sum([alpha[i]*t[i]*K[i,sv_position] for i in range(0,nSamples)])
 
         return [alpha, w0]
+    
+    def discriminant(alpha,w0,X,t,Xnew):
+        """discriminent function applied on a set of vector in colomn represented by Xnew using the trained on X,t SVM"""
+        nSample, nFeatures= X.shape
+        nNew, nFeatures = Xnew.shape # not sure about the shape of Xnew: vector are said to be in column
+        
+        K = np.zeros([nSample,nNew])
+        for i in range(nSamples):
+            for j in range(nNew):
+                K[i, j] = self.kernel(X[i], Xnew[j])
+                
+        y = np.zeros(nNew)
+        for i in range(nNew):
+            target = np.sign(w0 +sum([alpha[j]*t[j]*K[j,i]]))
+            y[i] = target
+            
+        return y
