@@ -54,16 +54,24 @@ class SVM:
         # Support vectors have non zero lagrange multipliers
         threshold = 1e-5 # some small threshold
         sv = alpha > threshold
-        positions = np.where(alpha>threshold)# indices of actives data set point
+        positions = np.where(alpha>threshold)[0]# indices of actives data set point
         
 
 
         #TODO: extract support vectors etc.
         sv_position = positions[0] # we choose the first vector of the list of sv
+       
+        sum_w = 0
+        for i in range(nSamples):
+            sum_w += alpha[i]*t[i]*K[i,sv_position]
+        
+        print(sum_w)
 
-        w0 = t[sv_position] -np.sum(np.array([alpha[i]*t[i]*K[i,sv_position] for i in range(0,nSamples)]))
+        w0 = t[sv_position] -sum_w
+        
 
-        return [alpha, w0]
+
+        return [alpha, w0,positions]
     
     def discriminant(alpha,w0,X,t,Xnew,kernel=kernel.linearkernel):
         """discriminent function applied on a set of vector in colomn represented by Xnew using the trained on X,t SVM"""
