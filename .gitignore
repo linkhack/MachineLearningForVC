@@ -378,3 +378,5 @@ TSWLatexianTemp*
 exercise1/documentation/assignment1.pdf
 exercise1/documentation/assignment1.pdf
 *.pdf
+
+!exercise2/documentation/stuff/*.pdf

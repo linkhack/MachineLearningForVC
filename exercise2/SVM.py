@@ -64,8 +64,6 @@ class SVM:
         sv_X = x[sv_index]
         sv_T = t[sv_index]
 
-        print("%d support vectors out of %d points" % (len(sv), nSamples))
-
         # calculate w0
         w0 = 0
         for n in range(len(sv)):
