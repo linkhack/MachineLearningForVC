@@ -1,20 +1,25 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 11 17:53:17 2019
 
-@author: arnau
-"""
-import cvxopt
+import exercise2.Kernel as kernel
+from exercise2.SVM import SVM
 import numpy as np
+import tools_Plot as t_pl
+import exercise1.part1.mnist_subset_and_feature_utils as utils
 
-#D1= cvxopt.matrix(np.diag(np.ones(5) * -1), tc='d')
-#D2= cvxopt.matrix(np.diag(np.ones(5) ), tc='d')
-#G = cvxopt.matrix([D1,D2])
-#
-#print(G)
+##importants datas
+digits = [0, 7]
+sigma = 1
+C = 10
 
-h1 = cvxopt.matrix(np.zeros(5), tc='d')
-h2 = cvxopt.matrix(np.ones(5) * 4, tc='d')
-h = cvxopt.matrix([h1,h2])
 
-print(h)
+## Importation of the set from the first exercice
+
+training_set, training_targets = utils.get_digits(digits, 500)
+features = utils.calculate_features(training_set)
+
+
+## Creation of the SVM
+
+svm = SVM()
+
+[alpha, w0] = svm.trainSVM(features, training_targets, kernel.rbfkernel, sigma =sigma, C=C)

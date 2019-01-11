@@ -23,7 +23,7 @@ class SVM:
         self.sigma  = sigma
 
         # get some dimensions
-        nSamples, nFeatures = x.shape
+        nFeatures, nSamples = x.shape
 
         # Given a set 𝑉 of 𝑚 vectors (points in ℝ𝑛), the Gram matrix 𝐺 is the matrix of all possible inner products of 𝑉,
         # i.e., 𝑔𝑖𝑗=𝑣𝑇𝑖𝑣𝑗, where 𝐴𝑇 denotes the transpose.
@@ -34,11 +34,11 @@ class SVM:
         if sigma == -1:
             for i in range(nSamples):
                 for j in range(nSamples):
-                    gram_matrix[i, j] = self.kernel(x[i], x[j])
+                    gram_matrix[i, j] = self.kernel(x[:,i], x[:,j])
         else:
             for i in range(nSamples):
                 for j in range(nSamples):
-                    gram_matrix[i, j] = self.kernel(x[i], x[j], sigma)
+                    gram_matrix[i, j] = self.kernel(x[:,i], x[:,j], sigma)
 
         # FYI tc='d' specifies double as matrix content type!
 
@@ -75,7 +75,7 @@ class SVM:
 
         # get support vectors and corresponding x and label values
         sv = alpha[sv_index]
-        sv_X = x[sv_index]
+        sv_X = x[:,sv_index]
         sv_T = t[sv_index]
 
         # calculate w0
@@ -94,19 +94,24 @@ class SVM:
 
 
         """
-        nSamples, nFeatures = X.shape
+        nFeatures, nSamples = X.shape
         gram_matrix = np.zeros((nSamples, nSamples))
-
-        for i in range(nSamples):
-            for j in range(nSamples):
-                gram_matrix[i, j] = self.kernel(X[i], X[j])
+        
+        if self.sigma == -1:
+            for i in range(nSamples):
+                for j in range(nSamples):
+                    gram_matrix[i, j] = self.kernel(X[:,i], X[:,j])
+        else:
+            for i in range(nSamples):
+                for j in range(nSamples):
+                    gram_matrix[i, j] = self.kernel(X[:,i], X[j], sigma)
 
         # Support vectors have non zero lagrange multipliers
         sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
 
         # get support vectors and corresponding x and label values
         sv = alpha[sv_index]
-        sv_X = X[sv_index]
+        sv_X = X[:,sv_index]
         sv_T = t[sv_index]
 
         # pre allocate result label vector

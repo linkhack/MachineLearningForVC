@@ -30,7 +30,7 @@ colors = {-1: 'red', 1: 'blue'}
 # part 2: SVM
 svm = SVM()
 # [sv, sv_X, sv_T, w0] = svm.trainSVM(X, t, kernel.linearkernel)
-[alpha, w0] = svm.trainSVM(X, t, kernel.linearkernel)
+[alpha, w0] = svm.trainSVM(np.transpose(X), t, kernel.linearkernel)
 
 # res = svm.trainSVM(X,t)
 # draw scatter plot
