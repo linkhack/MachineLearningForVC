@@ -85,7 +85,7 @@ class SVM:
             w0 = w0 - np.sum(sv * sv_T * gram_matrix[ind[n], sv_index])
         w0 = w0 / len(sv)
 
-        return [alpha, w0]
+        return [alpha, w0,sv_index]
 
     def discriminant(self, alpha, w0, X, t, Xnew):
         """

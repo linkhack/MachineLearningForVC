@@ -3,7 +3,7 @@ import matplotlib.image as pltImg
 import numpy as np
 import exercise2.Kernel as kernel
 
-def plot_SVM(alpha,w0,positions,X,t,Xnew,tnew,kernel=kernel.linearkernel):
+def plot_SVM(alpha,w0,positions,X,t,Xnew,tnew,kernel=kernel.linearkernel,sigma=-1):
     """ ploting of the decision boundaries and the margin for the SVM trained on (X,t) 
     assuming that X represent vector written by colums"""
     nFeatures, nSamples = X.shape
@@ -21,10 +21,11 @@ def plot_SVM(alpha,w0,positions,X,t,Xnew,tnew,kernel=kernel.linearkernel):
     result = np.zeros([200,200])
     for i in range(0,200):
         for j in range(0,200):
-            vector = np.array([[X_grid[i,j]],[Y_grid[i,j]]])
+            vector = np.transpose(np.array([[X_grid[i,j]],[Y_grid[i,j]]]))
             value = w0
             for k in range(nSamples):
-                value += alpha[k]*t[k]*kernel(X[:,k],vector)
+                
+                value += alpha[k]*t[k]*kernel(X[:,k],vector,sigma=sigma)
 
             result[i,j] = value
         print(i)

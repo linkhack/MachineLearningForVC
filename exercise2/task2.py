@@ -22,4 +22,6 @@ features = utils.calculate_features(training_set)
 
 svm = SVM()
 
-[alpha, w0] = svm.trainSVM(features, training_targets, kernel.rbfkernel, sigma =sigma, C=C)
+[alpha, w0,positions] = svm.trainSVM(features, training_targets, kernel.rbfkernel, sigma =sigma, C=C)
+
+t_pl.plot_SVM(alpha,w0,positions,features,training_targets,features,training_targets,kernel=kernel.rbfkernel,sigma=sigma)

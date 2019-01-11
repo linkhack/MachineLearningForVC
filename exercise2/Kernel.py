@@ -5,7 +5,7 @@ def linearkernel(x1, x2):
     """
     linear kernel function
     """
-    return np.dot(x1, x2)
+    return np.inner(x1, x2)
 
 def rbfkernel(x1,x2,sigma):
     """
@@ -14,6 +14,6 @@ def rbfkernel(x1,x2,sigma):
     """
     vector = x1-x2
     
-    value = np.exp(-np.dot(vector,vector)/(2*sigma**2))
+    value = np.exp(-np.inner(vector,vector)/(2*sigma**2))
     
     return value
