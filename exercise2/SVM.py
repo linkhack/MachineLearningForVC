@@ -75,6 +75,8 @@ class SVM:
         solution = cvxopt.solvers.qp(P, q, G, h, A, b)
         # Lagrange multipliers
         alpha = np.ravel(solution['x'])
+        slack = np.ravel(solution['z'])
+
 
         # Support vectors have non zero lagrange multipliers
         sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
@@ -88,11 +90,12 @@ class SVM:
         sv_T = t[sv_index]
 
         # calculate w0
-        w0 = 0
-        for n in range(len(sv)):
-            w0 = w0 + sv_T[n]
-            w0 = w0 - np.sum(sv * sv_T * gram_matrix[ind[n], sv_index])
-        w0 = w0 / len(sv)
+        main_sv_index = np.argmax(alpha)
+        if self.c is None:
+            w0 = t[main_sv_index] - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
+        else:
+            w0 = t[main_sv_index]*(1 - slack[main_sv_index+len(t)])  # interested in associated slack variable
+            w0 = w0 - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
 
         return [alpha, w0, sv_index]
 
@@ -108,17 +111,6 @@ class SVM:
 
 
         """
-        nFeatures, nSamples = X.shape
-        gram_matrix = np.zeros((nSamples, nSamples))
-
-        for i in range(nSamples):
-            for j in range(nSamples):
-                if self.kernel == k.linearkernel:
-                    gram_matrix[i, j] = self.kernel(X[:, i], X[:, j])
-                elif self.kernel == k.rbfkernel:
-                    gram_matrix[i, j] = self.kernel(X[:, i], X[:, j], self.sigma)
-                else:
-                    return 0
 
         # Support vectors have non zero lagrange multipliers
         sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
@@ -127,7 +119,6 @@ class SVM:
         sv = alpha[sv_index]
         sv_X = X[sv_index, :]
         sv_T = t[sv_index]
-
 
         # pre allocate result label vector
         y_predict = np.zeros(len(Xnew))

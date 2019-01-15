@@ -39,9 +39,9 @@ for i in range(0,nr_sets):
    data_set = mnf.transform_images(data_sets[i])
    target_set = target_sets[i]
    
-   [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
+   [alpha, w0, positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
 
-   predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set,t=target_set,Xnew=test_data) # calculation of predicted target for swm
+   predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T) # calculation of predicted target for swm
    SVM_error_rate.append(t_pl.error_rate(predicted_targets_svm,test_target)) 
    
    ## perceptron
@@ -58,8 +58,8 @@ Perc_error = sum(Perc_error_rate)/150
    
 #%% Analysing the effect of changing C and sigma on the average test error rate:
 
-C_range=
-Sigma_range=
+C_range=[1,10,100,1000]
+Sigma_range=[0.5,1,1.5,3,6]
 
 C_error_rate= []
 Sigma_error_rate=[]
@@ -78,13 +78,13 @@ for C in C_range:
         target_set = target_sets[i]
         
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set,t=target_set,Xnew=test_data) # calculation of predicted target for swm
+        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T) # calculation of predicted target for swm
         SVM_error_rate_0.append(t_pl.error_rate(predicted_targets_svm,test_target))
     C_error_rate.append(sum(SVM_error_rate_0)/150)
 
 C = 100
 
-for sigma in sigma_range:
+for sigma in Sigma_range:
     SVM_error_rate_1 =[]
     
     for i in range(0,nr_sets):
@@ -95,7 +95,7 @@ for sigma in sigma_range:
         target_set = target_sets[i]
         
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set,t=target_set,Xnew=test_data) # calculation of predicted target for swm
+        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T ) # calculation of predicted target for swm
         SVM_error_rate_1.append(t_pl.error_rate(predicted_targets_svm,test_target))
     Sigma_error_rate.append(sum(SVM_error_rate_1)/150)
     
@@ -123,7 +123,7 @@ for C in C_range:
 
 C = 100
 
-for sigma in sigma_range:
+for sigma in Sigma_range:
     SVM_error_rate_3 =[]
     
     for i in range(0,nr_sets):
