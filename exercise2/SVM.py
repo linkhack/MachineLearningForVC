@@ -77,7 +77,6 @@ class SVM:
         alpha = np.ravel(solution['x'])
         slack = np.ravel(solution['z'])
 
-
         # Support vectors have non zero lagrange multipliers
         sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
 
@@ -94,7 +93,7 @@ class SVM:
         if self.c is None:
             w0 = t[main_sv_index] - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
         else:
-            w0 = t[main_sv_index]*(1 - slack[main_sv_index+len(t)])  # interested in associated slack variable
+            w0 = t[main_sv_index] * (1 - slack[main_sv_index + len(t)])  # interested in associated slack variable
             w0 = w0 - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
 
         return [alpha, w0, sv_index]
@@ -123,27 +122,18 @@ class SVM:
         # pre allocate result label vector
         y_predict = np.zeros(len(Xnew))
 
-        # label all xNew values
-        # first * is componentwise, second is matrix multiplication
-        # self.kernel is a nr_of_data * nr_of_sv matrix
-        # gives nr_of_data many values
-        y_predict = sv * sv_T @ self.kernel(Xnew, sv_X).T
+        for i in range(len(Xnew)):
+            s = 0
+            for a, sv_t, sv_x in zip(sv, sv_T, sv_X):
+                if self.kernel == k.linearkernel:
 
-        #statemant above written our
+                    s += a * sv_t * self.kernel(Xnew[i], sv_x)
+                elif self.kernel == k.rbfkernel:
+                    s += a * sv_t * self.kernel(Xnew[i], sv_x, self.sigma)
+                else:
+                    return 0
 
-        # for i in range(len(Xnew)):
-        #     s = 0
-        #     s2 = np.dot(sv*sv_T,self.kernel(Xnew[i],sv_X))
-        #     for a, sv_t, sv_x in zip(sv, sv_T, sv_X):
-        #         if self.kernel == k.linearkernel:
-
-        #             s += a * sv_t * self.kernel(Xnew[i], sv_x)
-        #         elif self.kernel == k.rbfkernel:
-        #             s += a * sv_t * self.kernel(Xnew[i], sv_x, self.sigma)
-        #         else:
-        #             return 0
-        #
-        #     y_predict[i] = s
+            y_predict[i] = s
 
         # return np.sign(y_predict + w0)
         # just return d(x)
