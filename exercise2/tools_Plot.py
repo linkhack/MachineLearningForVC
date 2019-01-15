@@ -50,5 +50,35 @@ def error_rate(tpred,target):
     """return the error rate """
     nSamples= np.size(target)
     return np.sum((target-tpred)**2/(4*nSamples))
-    
-    
+
+
+def plot(X, t, w0, alpha, sv_index, svm):
+
+    grid_size = 100
+    sv = alpha[sv_index]
+    sv_X = X[sv_index, :]
+    sv_T = t[sv_index]
+
+    # draw margin:
+    # get min and max values of training dimensions first
+
+    minX = min(X[:, 0])
+    maxX = max(X[:, 0])
+    minY = min(X[:, 1])
+    maxY = max(X[:, 1])
+
+    # create meshgrid for current space
+    X1, X2 = np.meshgrid(np.linspace(minX, maxX, grid_size), np.linspace(minY, maxY, grid_size))
+    X_new = np.array([[x1, x2] for x1, x2 in zip(np.ravel(X1), np.ravel(X2))])
+
+    # calculate discriminante for all points in space
+    Z = svm.discriminant(alpha, w0, X, t, X_new).reshape(X1.shape)
+
+    plt.contour(X1, X2, Z, [0.0], colors='grey')
+    plt.contour(X1, X2, Z + 1, [0.0], colors='grey', linestyles='dashed')
+    plt.contour(X1, X2, Z - 1, [0.0], colors='grey', linestyles='dashed')
+
+    # show support vectors.
+    plt.scatter(sv_X[:, 0], sv_X[:, 1], c="w", marker='.')
+    plt.show()
+

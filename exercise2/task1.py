@@ -3,6 +3,7 @@ from pandas import DataFrame
 import matplotlib.pyplot as plt
 import exercise2.Kernel as kernel
 import numpy as np
+import exercise2.tools_Plot as plot
 from exercise2.SVM import SVM
 
 # installs:
@@ -29,56 +30,29 @@ colors = {-1: 'red', 1: 'blue'}
 
 # part 2: SVM with hard margin
 svm = SVM()
-svm.setSigma(5.5)
+svm.setSigma(1.0)
+
+X = np.transpose(X)
 # svm with linear kernel
-#[alpha, w0] = svm.trainSVM(X, t)
+#[alpha, w0,sv_index] = svm.trainSVM(X, t)
+
 
 # svm with linear kernel and slack variable
-[alpha, w0] = svm.trainSVM(X, t, kernel.linearkernel, 0.1 )
+#[alpha, w0,sv_index] = svm.trainSVM(X, t, kernel.linearkernel, 0.1)
 
 # svm with rbf kernel
-# [alpha, w0] = svm.trainSVM(X, t, kernel.rbfkernel )
+# [alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel )
 
 # svm with rbf kernel and slack
-#[alpha, w0] = svm.trainSVM(X, t, kernel.rbfkernel, 1.5)
+[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel, 1.5)
 
-# res = svm.trainSVM(X,t)
-# draw scatter plot
+
+# draw data plot
 for i, group in grouped:
     color = colors[i]
     group.plot(ax=axis, kind='scatter', x='x', y='y', label=i, color=color)
 
-# Support vectors have non zero lagrange multipliers
-sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
-
-# position index of support vectors in alpha array
-ind = np.arange(len(alpha))[sv_index]
-
-# get support vectors and corresponding x and label values
-sv = alpha[sv_index]
-sv_X = X[sv_index]
-sv_T = t[sv_index]
-
-# draw margin:
-# get min and max values of training dimensions first
-minX = min(X[:, 0])
-maxX = max(X[:, 0])
-minY = min(X[:, 1])
-maxY = max(X[:, 1])
-
-# create meshgrid for current space
-X1, X2 = np.meshgrid(np.linspace(minX, maxX, 50), np.linspace(minY, maxY, 50))
-X_new = np.array([[x1, x2] for x1, x2 in zip(np.ravel(X1), np.ravel(X2))])
-
-# calculate discriminante for all points in space
-Z = svm.discriminant(alpha, w0, X, t, X_new).reshape(X1.shape)
-
-plt.contour(X1, X2, Z, [0.0], colors='grey')
-plt.contour(X1, X2, Z + 1, [0.0], colors='grey', linestyles='dashed')
-plt.contour(X1, X2, Z - 1, [0.0], colors='grey', linestyles='dashed')
-
-# show support vectors.
-plt.scatter(sv_X[:, 0], sv_X[:, 1], c="w", marker='.')
-plt.show()
-
+X = np.transpose(X)
+#draw margin
+plot.plot(X, t, w0, alpha, sv_index, svm)
 # tadaaaaa

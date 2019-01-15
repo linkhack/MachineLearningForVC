@@ -7,7 +7,7 @@ class SVM:
 
     def __init__(self):
         """contructor"""
-        #to be used with rbfKernels see exercise2.Kernel for function
+        # to be used with rbfKernels see exercise2.Kernel for function
         self.sigma = 5.0
 
     def setSigma(self, sigma):
@@ -27,7 +27,7 @@ class SVM:
         """
         self.c = c
         self.kernel = kernel
-        #self.sigma  = sigma
+        # self.sigma  = sigma
 
         # get some dimensions
         nFeatures, nSamples = x.shape
@@ -41,9 +41,9 @@ class SVM:
         for i in range(nSamples):
             for j in range(nSamples):
                 if self.kernel == k.linearkernel:
-                    gram_matrix[i, j] = self.kernel(x[i], x[j])
+                    gram_matrix[i, j] = self.kernel(x[:, i], x[:, j])
                 elif self.kernel == k.rbfkernel:
-                    gram_matrix[i, j] = self.kernel(x[i], x[j], self.sigma)
+                    gram_matrix[i, j] = self.kernel(x[:, i], x[:, j], self.sigma)
                 else:
                     return 0
         # FYI tc='d' specifies double as matrix content type!
@@ -71,7 +71,6 @@ class SVM:
             partB = np.ones(nSamples) * self.c
             h = cvxopt.matrix(np.hstack((partA, partB)), tc='d')
 
-
         # call the solver with our arguments
         solution = cvxopt.solvers.qp(P, q, G, h, A, b)
         # Lagrange multipliers
@@ -85,7 +84,7 @@ class SVM:
 
         # get support vectors and corresponding x and label values
         sv = alpha[sv_index]
-        sv_X = x[sv_index]
+        # sv_X = x[:,sv_index]
         sv_T = t[sv_index]
 
         # calculate w0
@@ -95,7 +94,7 @@ class SVM:
             w0 = w0 - np.sum(sv * sv_T * gram_matrix[ind[n], sv_index])
         w0 = w0 / len(sv)
 
-        return [alpha, w0,sv_index]
+        return [alpha, w0, sv_index]
 
     def discriminant(self, alpha, w0, X, t, Xnew):
         """
@@ -115,9 +114,9 @@ class SVM:
         for i in range(nSamples):
             for j in range(nSamples):
                 if self.kernel == k.linearkernel:
-                    gram_matrix[i, j] = self.kernel(X[i], X[j])
+                    gram_matrix[i, j] = self.kernel(X[:, i], X[:, j])
                 elif self.kernel == k.rbfkernel:
-                    gram_matrix[i, j] = self.kernel(X[i], X[j], self.sigma)
+                    gram_matrix[i, j] = self.kernel(X[:, i], X[:, j], self.sigma)
                 else:
                     return 0
 
@@ -126,8 +125,9 @@ class SVM:
 
         # get support vectors and corresponding x and label values
         sv = alpha[sv_index]
-        sv_X = X[:,sv_index]
+        sv_X = X[sv_index, :]
         sv_T = t[sv_index]
+
 
         # pre allocate result label vector
         y_predict = np.zeros(len(Xnew))
@@ -137,6 +137,9 @@ class SVM:
             s = 0
             for a, sv_t, sv_x in zip(sv, sv_T, sv_X):
                 if self.kernel == k.linearkernel:
+                    # print(sv_x)
+                    # print(Xnew[i])
+
                     s += a * sv_t * self.kernel(Xnew[i], sv_x)
                 elif self.kernel == k.rbfkernel:
                     s += a * sv_t * self.kernel(Xnew[i], sv_x, self.sigma)
