@@ -204,6 +204,6 @@ def transform_images(image_datas):
     X = np.zeros([n*m,nbr])
     for i in range(nbr):
         image = np.reshape(image_datas[i,:,:],n*m)#transformation into a column vector
-        X[:,i]= image
+        X[:,i]= image/255.0
     return(X)
         

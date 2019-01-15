@@ -86,7 +86,7 @@ class SVM:
         slack = np.ravel(solution['z'])
 
         # Support vectors have non zero lagrange multipliers
-        sv_index = alpha > 1e-7  # some small threshold a little bit greater than 0, [> 0  was too crowded]
+        sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
 
         # position index of support vectors in alpha array
         ind = np.arange(len(alpha))[sv_index]
@@ -120,7 +120,7 @@ class SVM:
         """
 
         # Support vectors have non zero lagrange multipliers
-        sv_index = alpha > 1e-7  # some small threshold a little bit greater than 0, [> 0  was too crowded]
+        sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
 
         # get support vectors and corresponding x and label values
         sv = alpha[sv_index]

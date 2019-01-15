@@ -9,8 +9,8 @@ import exercise1.part1.mnist_subset_and_feature_utils as utils
 
 ##importants datas
 digits = [0, 7]
-sigma = 1.5
-C = 100
+sigma = 0.5
+C = 10
 
 ## Importation of the set from the first exercice
 
