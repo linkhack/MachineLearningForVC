@@ -27,10 +27,20 @@ grouped = d.groupby('label')
 # color dictionary for plot
 colors = {-1: 'red', 1: 'blue'}
 
-# part 2: SVM
+# part 2: SVM with hard margin
 svm = SVM()
-# [sv, sv_X, sv_T, w0] = svm.trainSVM(X, t, kernel.linearkernel)
-[alpha, w0] = svm.trainSVM(np.transpose(X), t, kernel.linearkernel)
+svm.setSigma(5.5)
+# svm with linear kernel
+#[alpha, w0] = svm.trainSVM(X, t)
+
+# svm with linear kernel and slack variable
+[alpha, w0] = svm.trainSVM(X, t, kernel.linearkernel, 0.1 )
+
+# svm with rbf kernel
+# [alpha, w0] = svm.trainSVM(X, t, kernel.rbfkernel )
+
+# svm with rbf kernel and slack
+#[alpha, w0] = svm.trainSVM(X, t, kernel.rbfkernel, 1.5)
 
 # res = svm.trainSVM(X,t)
 # draw scatter plot
@@ -49,8 +59,6 @@ sv = alpha[sv_index]
 sv_X = X[sv_index]
 sv_T = t[sv_index]
 
-
-
 # draw margin:
 # get min and max values of training dimensions first
 minX = min(X[:, 0])
@@ -58,9 +66,10 @@ maxX = max(X[:, 0])
 minY = min(X[:, 1])
 maxY = max(X[:, 1])
 
-#create meshgrid for current space
+# create meshgrid for current space
 X1, X2 = np.meshgrid(np.linspace(minX, maxX, 50), np.linspace(minY, maxY, 50))
 X_new = np.array([[x1, x2] for x1, x2 in zip(np.ravel(X1), np.ravel(X2))])
+
 # calculate discriminante for all points in space
 Z = svm.discriminant(alpha, w0, X, t, X_new).reshape(X1.shape)
 
@@ -68,7 +77,8 @@ plt.contour(X1, X2, Z, [0.0], colors='grey')
 plt.contour(X1, X2, Z + 1, [0.0], colors='grey', linestyles='dashed')
 plt.contour(X1, X2, Z - 1, [0.0], colors='grey', linestyles='dashed')
 
-
 # show support vectors.
-plt.scatter(sv_X[:, 0], sv_X[:, 1], s=50, c="g")
+plt.scatter(sv_X[:, 0], sv_X[:, 1], c="w", marker='.')
 plt.show()
+
+# tadaaaaa

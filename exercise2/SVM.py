@@ -1,26 +1,33 @@
 import cvxopt
 import numpy as np
-import exercise2.Kernel as kernel
+import exercise2.Kernel as k
 
 
 class SVM:
 
     def __init__(self):
         """contructor"""
+        #to be used with rbfKernels see exercise2.Kernel for function
+        self.sigma = 5.0
 
-    def trainSVM(self, x, t, kernel=kernel.linearkernel, sigma = -1, C = -1):
+    def setSigma(self, sigma):
+        self.sigma = sigma
+
+    def trainSVM(self, x, t, kernel=k.linearkernel, c=None):
         """
         Keyword arguments:
-        X -- input vector
-        t -- labels
-        kernel -- kernel function. see Kernel class,
+        :param x: ndarray
+        :param t: ndarray
+        :param kernel:
+        :param c: float
 
-        returns [sv, sv_x, sv_t, w0]
+        :return [alpha, w0]:
         The vector alpha holds the optimal dual parameter values, i.e., the lagrange multipliers αi for all N input vectors
         w0 is the offset of the decision plane, which can be computed using alpha and one support vector (The data points for which the (dual variables) αi > 0 are called support vectors.)
         """
+        self.c = c
         self.kernel = kernel
-        self.sigma  = sigma
+        #self.sigma  = sigma
 
         # get some dimensions
         nFeatures, nSamples = x.shape
@@ -31,15 +38,14 @@ class SVM:
         # 𝑚𝑎𝑥𝛼𝑖≥0∑𝑖𝛼𝑖−12∑𝑗𝑘𝛼𝑗𝛼𝑘𝑦𝑗𝑦𝑘(𝑥𝑇𝑗𝑥𝑘)
         #
         gram_matrix = np.zeros((nSamples, nSamples))
-        if sigma == -1:
-            for i in range(nSamples):
-                for j in range(nSamples):
-                    gram_matrix[i, j] = self.kernel(x[:,i], x[:,j])
-        else:
-            for i in range(nSamples):
-                for j in range(nSamples):
-                    gram_matrix[i, j] = self.kernel(x[:,i], x[:,j], sigma)
-
+        for i in range(nSamples):
+            for j in range(nSamples):
+                if self.kernel == k.linearkernel:
+                    gram_matrix[i, j] = self.kernel(x[i], x[j])
+                elif self.kernel == k.rbfkernel:
+                    gram_matrix[i, j] = self.kernel(x[i], x[j], self.sigma)
+                else:
+                    return 0
         # FYI tc='d' specifies double as matrix content type!
 
         # prepare arguments for solver:
@@ -51,17 +57,21 @@ class SVM:
         A = cvxopt.matrix(t, (1, nSamples), tc='d')
         b = cvxopt.matrix(0.0, tc='d')
         # unequivalent constraints: Gx <= h
-        if C== -1:
+        if self.c is None:
+            # hard margin
             G = cvxopt.matrix(np.diag(np.ones(nSamples) * -1), tc='d')
             h = cvxopt.matrix(np.zeros(nSamples), tc='d')
         else:
-            D1= cvxopt.matrix(np.diag(np.ones(nSamples) * -1), tc='d')
-            D2= cvxopt.matrix(np.diag(np.ones(nSamples) ), tc='d')
-            G = cvxopt.matrix([D1,D2])
-            h1 = cvxopt.matrix(np.zeros(nSamples), tc='d')
-            h2 = cvxopt.matrix(np.ones(nSamples) * C, tc='d')
-            h = cvxopt.matrix([h1,h2])
-            
+            ##with slack variable, a.k.a. soft margin!
+            partA = np.diag(np.ones(nSamples) * -1)
+            partB = np.identity(nSamples)
+            G = cvxopt.matrix(np.vstack((partA, partB)), tc='d')
+
+            partA = np.zeros(nSamples)
+            partB = np.ones(nSamples) * self.c
+            h = cvxopt.matrix(np.hstack((partA, partB)), tc='d')
+
+
         # call the solver with our arguments
         solution = cvxopt.solvers.qp(P, q, G, h, A, b)
         # Lagrange multipliers
@@ -75,7 +85,7 @@ class SVM:
 
         # get support vectors and corresponding x and label values
         sv = alpha[sv_index]
-        sv_X = x[:,sv_index]
+        sv_X = x[sv_index]
         sv_T = t[sv_index]
 
         # calculate w0
@@ -91,20 +101,25 @@ class SVM:
         """
         d (x) = (SUM αi K(xi , x)) + w0
         whereas K is kernel function
+        :type Xnew: ndarray
+        :type t: ndarray
+        :type X: ndarray
+        :type w0: ndarray
+        :type alpha: ndarray
 
 
         """
         nFeatures, nSamples = X.shape
         gram_matrix = np.zeros((nSamples, nSamples))
-        
-        if self.sigma == -1:
-            for i in range(nSamples):
-                for j in range(nSamples):
-                    gram_matrix[i, j] = self.kernel(X[:,i], X[:,j])
-        else:
-            for i in range(nSamples):
-                for j in range(nSamples):
-                    gram_matrix[i, j] = self.kernel(X[:,i], X[j], sigma)
+
+        for i in range(nSamples):
+            for j in range(nSamples):
+                if self.kernel == k.linearkernel:
+                    gram_matrix[i, j] = self.kernel(X[i], X[j])
+                elif self.kernel == k.rbfkernel:
+                    gram_matrix[i, j] = self.kernel(X[i], X[j], self.sigma)
+                else:
+                    return 0
 
         # Support vectors have non zero lagrange multipliers
         sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
@@ -121,7 +136,12 @@ class SVM:
         for i in range(len(Xnew)):
             s = 0
             for a, sv_t, sv_x in zip(sv, sv_T, sv_X):
-                s += a * sv_t * self.kernel(Xnew[i], sv_x)
+                if self.kernel == k.linearkernel:
+                    s += a * sv_t * self.kernel(Xnew[i], sv_x)
+                elif self.kernel == k.rbfkernel:
+                    s += a * sv_t * self.kernel(Xnew[i], sv_x, self.sigma)
+                else:
+                    return 0
             y_predict[i] = s
 
         # return np.sign(y_predict + w0)
