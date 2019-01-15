@@ -80,5 +80,4 @@ def plot(X, t, w0, alpha, sv_index, svm):
 
     # show support vectors.
     plt.scatter(sv_X[:, 0], sv_X[:, 1], c="w", marker='.')
-    plt.show()
 

@@ -10,8 +10,9 @@ import exercise1.part1.mnist_subset_and_feature_utils as utils
 ##importants datas
 digits = [0, 7]
 sigma = 0.5
-C = 10
-
+C = 50
+c_range = [1,10,100]
+sigma_range = [0.1, 1, 5]
 ## Importation of the set from the first exercice
 
 training_set, training_targets = utils.get_digits(digits, 500)
@@ -24,21 +25,39 @@ svm.setSigma(sigma)
 [alpha, w0, sv_index] = svm.trainSVM(features, training_targets, kernel.rbfkernel, c=C)
 
 # position index of support vectors in alpha array
-ind = np.arange(len(alpha))[sv_index]
-
-
-features = np.transpose(features)
 
 ##Draw data points:
 # firstClass
 ind = training_targets > 0
-data = features[ind, :]
-plt.scatter(data[:, 0], data[:, 1],s=70, c="r", marker='.')
+data = features[:, ind]
+plt.scatter(data[0, :], data[1, :],s=70, c="r", marker='.')
 # secondClass
 ind = training_targets < 0
-data = features[ind, :]
-plt.scatter(data[:, 0], data[:, 1], s=70, c="b", marker='.')
+data = features[:, ind]
+plt.scatter(data[0, :], data[1, :], s=70, c="b", marker='.')
 
 #draw margin
-t_pl.plot(features, training_targets, w0, alpha, sv_index, svm)
+t_pl.plot(features.T, training_targets, w0, alpha, sv_index, svm)
 # t_pl.plot_SVM(alpha,w0,positions,features,training_targets,features,training_targets,kernel=kernel.rbfkernel,sigma=sigma)
+index = 1
+fig = plt.figure(figsize=(12, 12))
+for sigma in sigma_range:
+    for c in c_range:
+        plt.subplot(3,3,index)
+        svm.setSigma(sigma)
+        [alpha, w0, sv_index] = svm.trainSVM(features, training_targets, kernel.rbfkernel, c=c)
+
+        ##Draw data points:
+        # firstClass
+        ind = training_targets > 0
+        data = features[:, ind]
+        plt.scatter(data[0, :], data[1, :], s=70, c="r", marker='.')
+        # secondClass
+        ind = training_targets < 0
+        data = features[:, ind]
+        plt.scatter(data[0, :], data[1, :], s=70, c="b", marker='.')
+
+        # draw margin
+        t_pl.plot(features.T, training_targets, w0, alpha, sv_index, svm)
+        index+=1
+plt.show()
