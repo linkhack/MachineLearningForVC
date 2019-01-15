@@ -202,13 +202,15 @@ def cross_validation(data_sets,target_sets,sigma,C):
     error_rate = []
     nbre_sets = np.size(data_sets)
     for k in range(0,nbre_sets):
-        data_set = np.array([])
-        test_set = np.array([])
+        data_set = []
+        test_set = []
         for j in range(0,nbre_sets): #creation of the data set with all the images of the 150 datas except the number k
             if j != k:
                 for l in range(np.size(data_sets[j])):
                     data_set.append(data_sets[j,l,:,:])
                     target_set.append(target_sets[j,l])
+        data_set = np.array(data_set)
+        target_set = np.array(target_set)
         data_set = mnf.transform_images(data_set) # get the matrix data
         
         test_set = mnf.transform_images(data_sets[k])

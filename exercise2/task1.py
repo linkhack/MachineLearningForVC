@@ -84,5 +84,5 @@ for i, group in grouped:
 
 # draw decision boundry
 plot.plot(X, t, w0, alpha, sv_index, svm)
-
+plt.show()
 # tadaaaaa
