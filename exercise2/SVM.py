@@ -38,14 +38,21 @@ class SVM:
         # 𝑚𝑎𝑥𝛼𝑖≥0∑𝑖𝛼𝑖−12∑𝑗𝑘𝛼𝑗𝛼𝑘𝑦𝑗𝑦𝑘(𝑥𝑇𝑗𝑥𝑘)
         #
         gram_matrix = np.zeros((nSamples, nSamples))
-        for i in range(nSamples):
-            for j in range(nSamples):
-                if self.kernel == k.linearkernel:
-                    gram_matrix[i, j] = self.kernel(x[:, i], x[:, j])
-                elif self.kernel == k.rbfkernel:
-                    gram_matrix[i, j] = self.kernel(x[:, i], x[:, j], self.sigma)
-                else:
-                    return 0
+        if self.kernel == k.linearkernel:
+            gram_matrix = self.kernel(x, x)
+        elif self.kernel == k.rbfkernel:
+            gram_matrix = self.kernel(x, x, self.sigma)
+        else:
+            return 0
+        #
+        # for i in range(nSamples):
+        #     for j in range(nSamples):
+        #         if self.kernel == k.linearkernel:
+        #             gram_matrix[i, j] = self.kernel(x[:, i], x[:, j])
+        #         elif self.kernel == k.rbfkernel:
+        #             gram_matrix[i, j] = self.kernel(x[:, i], x[:, j], self.sigma)
+        #         else:
+        #             return 0
         # FYI tc='d' specifies double as matrix content type!
 
         # prepare arguments for solver:
@@ -72,13 +79,14 @@ class SVM:
             h = cvxopt.matrix(np.hstack((partA, partB)), tc='d')
 
         # call the solver with our arguments
+        cvxopt.solvers.options['show_progress'] = False
         solution = cvxopt.solvers.qp(P, q, G, h, A, b)
         # Lagrange multipliers
         alpha = np.ravel(solution['x'])
         slack = np.ravel(solution['z'])
 
         # Support vectors have non zero lagrange multipliers
-        sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
+        sv_index = alpha > 1e-7  # some small threshold a little bit greater than 0, [> 0  was too crowded]
 
         # position index of support vectors in alpha array
         ind = np.arange(len(alpha))[sv_index]
@@ -112,28 +120,33 @@ class SVM:
         """
 
         # Support vectors have non zero lagrange multipliers
-        sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
+        sv_index = alpha > 1e-7  # some small threshold a little bit greater than 0, [> 0  was too crowded]
 
         # get support vectors and corresponding x and label values
         sv = alpha[sv_index]
         sv_X = X[sv_index, :]
         sv_T = t[sv_index]
 
-        # pre allocate result label vector
-        y_predict = np.zeros(len(Xnew))
+        if self.kernel == k.linearkernel:
 
-        for i in range(len(Xnew)):
-            s = 0
-            for a, sv_t, sv_x in zip(sv, sv_T, sv_X):
-                if self.kernel == k.linearkernel:
-
-                    s += a * sv_t * self.kernel(Xnew[i], sv_x)
-                elif self.kernel == k.rbfkernel:
-                    s += a * sv_t * self.kernel(Xnew[i], sv_x, self.sigma)
-                else:
-                    return 0
-
-            y_predict[i] = s
+            y_predict=sv * sv_T @ self.kernel(Xnew.T, sv_X.T).T
+        elif self.kernel == k.rbfkernel:
+            y_predict = sv * sv_T @ self.kernel(Xnew.T, sv_X.T, self.sigma).T
+        else:
+            return 0
+        #
+        # for i in range(len(Xnew)):
+        #     s = 0
+        #     for a, sv_t, sv_x in zip(sv, sv_T, sv_X):
+        #         if self.kernel == k.linearkernel:
+        #
+        #             s += a * sv_t * self.kernel(Xnew[i], sv_x)
+        #         elif self.kernel == k.rbfkernel:
+        #             s += a * sv_t * self.kernel(Xnew[i], sv_x, self.sigma)
+        #         else:
+        #             return 0
+        #
+        #     y_predict[i] = s
 
         # return np.sign(y_predict + w0)
         # just return d(x)

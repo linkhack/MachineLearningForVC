@@ -34,13 +34,13 @@ svm.setSigma(1.5)
 
 X = np.transpose(X)
 # svm with linear kernel
-[alpha, w0, sv_index] = svm.trainSVM(X, t)
+#[alpha, w0, sv_index] = svm.trainSVM(X, t)
 
 # svm with linear kernel and slack variable
 #[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.linearkernel, 1)
 
 # svm with rbf kernel
-# [alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel)
+[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel)
 
 # svm with rbf kernel and slack
 # [alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel,100)

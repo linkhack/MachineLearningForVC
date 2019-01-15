@@ -27,13 +27,27 @@ Once we have solved the problem, we get the (dual) solution $\bm{\alpha}$. The $
 \]
 and 
 \[
-	\omega_0 = t_{i_max} - \omega^t\bm{x_k}.
+	\omega_0 = t_{i_{\max}} - \omega^t\bm{x_{i_{\max}}}.
 \]
 In the sum to calculate $\omega$ most $\alpha_i$ are $0$, thus we only need to consider suport vectors to calculate $\omega$.
 
 With this we can also calculate the discriminant function and we don't need to calculate $\omega$ as it only depends on $\alpha_i$, $t_i$ and $x_i$. This gives us for new data points:
 \[
-	d(x) = \omega_0 + \sum_{i=0}^N\alpha_i*t_i*(x^tx_i)
+	d(x) = \omega_0 + \sum_{i=0}^N\alpha_it_i(x^tx_i),
 \]
-, where we again only need to sum over the support vectors.
+where we again only need to sum over the support vectors.
 \subsection{Validation}
+
+We used a synthetic generated set to test our implementation. We used the make blobs function of \texttt{scikit-learn\footnote{https://scikit-learn.org}} to generate the datset. We used two clusters with centers at $(1,1)$ and $(-1,-1)$ and standard deviation of $0.9$. For 200 data points and seed $=6$ we got a linearly seperable dataset. We then applied to trained SVM to the same clusters, but with 400 data points and different seed. The optimal parameters would be $\omega_0 = 0$ and $\omega = \lambda (1,1)$. We got following results. The two datesets with the decision boundry and margins are shown in figure \ref{task1::svm}. We see that one outlier was classified wrongly in the test set and naturally no in the training set, as the set is linearly separable.
+\begin{itemize}
+	\item $\omega_0 = 0.037$
+	\item $\omega = (0.9345, 0.9475)$
+\end{itemize}
+\begin{figure}
+	\includegraphics[width=0.5\textwidth]{task1_train}
+	\includegraphics[width=0.5\textwidth]{task1_test}
+	\caption{Trainng and testing of a SVM. Left ist training and right is testing.}
+	\label{task1::svm}
+\end{figure}
+
+We see that if we used the training set to train the SVM the result would be a worse decision boundry. For this we will introduce slack variables in the next task. The new formulation will also be able to handle sets that are not linearly separable.
