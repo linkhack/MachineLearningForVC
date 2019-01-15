@@ -1,8 +1,8 @@
 \subsection{Implementation}
 We implemented the SVM using quadratic programming. We used the solver from the \texttt{cvxopt\footnote{https://cvxopt.org/}} library to solve the optimization problem. A SVM is based on a percentron, but instead oof chosing any separating hyperplane, we choose the one with the largest margin. This can be expressed as a quadratic program in the following form.
 \begin{align*}
-	\min&&\, \frac{1}{2}\lVert w \rVert \\
-	&\text{s.t.}\, (\omega^tx_i+w_0)t_i \leq 1\text{,    } 1 \leq i \leq N.
+	\min&&\, \frac{1}{2}\lVert w \rVert&&  \\
+	\text{s.t.}&&\, (\omega^tx_i+w_0)t_i && 1 \leq i \leq N.
 \end{align*}
 Instead of solving this directly we search the dual problem of this solution. This problem is given by following quadratic program.
 \begin{align*}
