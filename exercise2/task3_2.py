@@ -2,7 +2,7 @@ import exercise2.mnist_subset_and_feature_utils as mnf
 import exercise2.Kernel as kernel
 from exercise2.SVM import SVM
 import numpy as np
-import tools_Plot as t_pl
+import exercise2.tools_Plot as t_pl
 import exercise1.part1.Perceptron as perc
 import matplotlib.pyplot as plt
 
@@ -31,6 +31,7 @@ test_data = mnf.transform_images(test_data) #transform into a matrix where image
 
 
 SVM_error_rate =[]
+SVM_soft_error_rate =[]
 Perc_error_rate=[]
 
 for i in range(0,nr_sets):
@@ -41,13 +42,21 @@ for i in range(0,nr_sets):
    data_set = mnf.transform_images(data_sets[i])
    target_set = target_sets[i]
    
-   
    [alpha, w0, positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
 
-   predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T) # calculation of predicted target for swm
-   SVM_error_rate.append(t_pl.error_rate(predicted_targets_svm,test_target)) 
-   
-   ## perceptron
+   predicted_targets_svm = np.sign(svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T)) # calculation of predicted target for swm
+   SVM_error_rate.append(t_pl.error_rate(predicted_targets_svm,test_target))
+
+   svm = SVM()
+   [alpha, w0, positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel, c=0.1 )
+
+   predicted_targets_svm = np.sign(svm.discriminant(alpha=alpha, w0=w0, X=data_set.T, t=target_set,
+                                             Xnew=test_data.T))  # calculation of predicted target for swm
+
+   SVM_soft_error_rate.append(t_pl.error_rate(predicted_targets_svm, test_target))
+
+
+    ## perceptron
    data_set_perc = mnf.augment_data(data_set)
    test_data_perc = mnf.augment_data(test_data)
    
@@ -57,13 +66,25 @@ for i in range(0,nr_sets):
    Perc_error_rate.append(t_pl.error_rate(predicted_targets_perc,test_target)) 
    
 SVM_error =sum(SVM_error_rate)/150
+SVM_soft_error =sum(SVM_soft_error_rate)/150
 Perc_error = sum(Perc_error_rate)/150
+
 
 print("SVM_error =")
 print(SVM_error)
+print("SVM_soft_error =")
+print(SVM_soft_error)
 print("Perc_error =")
 print(Perc_error)
-   
+
+#show error rate over sets
+x= range(0,nr_sets )
+plt.scatter(x, SVM_error_rate, c="b", marker='.')
+plt.scatter(x, Perc_error_rate, c="r", marker='.')
+#plt.scatter(x, SVM_soft_error_rate, c="y", marker='+')
+plt.show()
+
+
 #%% Analysing the effect of changing C and sigma on the average test error rate:
 
 C_range=[1,10,100,1000]
@@ -91,7 +112,7 @@ for C in C_range:
         target_set = target_sets[i]
         
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.rbfkernel, c=C)
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T) # calculation of predicted target for swm
+        predicted_targets_svm = np.sign( svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T)) # calculation of predicted target for swm
         SVM_error_rate_0.append(t_pl.error_rate(predicted_targets_svm,test_target))
         nbre_SV.append(np.size(positions)) #number of support vector
     average_nbre_SV_1.append(sum(nbre_SV)/150) #average of number of support vector
@@ -113,13 +134,14 @@ for sigma in Sigma_range:
         
 
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.rbfkernel, c=C)
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T ) # calculation of predicted target for swm
+        predicted_targets_svm =np.sign( svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T )) # calculation of predicted target for swm
 
         SVM_error_rate_1.append(t_pl.error_rate(predicted_targets_svm,test_target))
         nbre_SV.append(np.size(positions))
     average_nbre_SV_2.append(sum(nbre_SV)/150)
     Sigma_error_rate.append(sum(SVM_error_rate_1)/150)
 
+plt.figure(11)
 # printing of the result    
 plt.subplot(2,2,1)
 plt.plot(C_range,C_error_rate)
@@ -136,7 +158,7 @@ plt.title("average number of SV depending on th error rate(for C variation)")
 plt.subplot(2,2,4)
 plt.plot(Sigma_error_rate,average_nbre_SV_2)
 plt.title("average number of SV depending on th error rate(for sigma variation)")
-    
+plt.show()
 #%%analysing of the effect changing set on average training error:
 C_range=[1,10,100,1000]
 Sigma_range=[0.5,1,1.5,3,6]
@@ -162,7 +184,7 @@ for C in C_range:
 
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.rbfkernel,c=C)
 
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=data_set.T) # calculation of predicted target for swm
+        predicted_targets_svm = np.sign( svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=data_set.T)) # calculation of predicted target for swm
         SVM_error_rate_0.append(t_pl.error_rate(predicted_targets_svm,target_set))
     C_error_rate_2.append(sum(SVM_error_rate_2)/150)
 
@@ -182,11 +204,12 @@ for sigma in Sigma_range:
 
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.rbfkernel, c=C)
 
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=data_set.T) # calculation of predicted target for swm
+        predicted_targets_svm = np.sign(svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=data_set.T)) # calculation of predicted target for swm
         SVM_error_rate_1.append(t_pl.error_rate(predicted_targets_svm,target_set))
     Sigma_error_rate_2.append(sum(SVM_error_rate_3)/150)
     
 #some plot
+plt.figure(13)
 plt.subplot(2,2,1)
 plt.plot(C_range,C_error_rate_2)
 plt.title("average training error rate depending on C")
@@ -194,7 +217,7 @@ plt.title("average training error rate depending on C")
 plt.subplot(2,2,2)
 plt.plot(Sigma_range,Sigma_error_rate_2)
 plt.title("average training error rate depending on sigma")
-    
+plt.show()
 #%%function for M-fold cross validation
 
 def cross_validation(data_sets,target_sets,sigma,C):
@@ -203,11 +226,12 @@ def cross_validation(data_sets,target_sets,sigma,C):
     nbre_sets = np.size(data_sets)
     for k in range(0,nbre_sets):
         data_set = []
+        target_set = []
         test_set = []
         for j in range(0,nbre_sets): #creation of the data set with all the images of the 150 datas except the number k
             if j != k:
                 for l in range(np.size(data_sets[j])):
-                    data_set.append(data_sets[j,l,:,:])
+                    data_set.append(data_sets[j,l])
                     target_set.append(target_sets[j,l])
         data_set = np.array(data_set)
         target_set = np.array(target_set)
@@ -275,13 +299,3 @@ SVM_error_opti = sum(SVM_error_rate_opti)/150
 
 print("average error rate on test set for SVM with RBF kernel for optimum sigma and C = ")
 print(SVM_error_opti)
-        
-                    
-        
-
-    
-
-    
-   
-
-   
