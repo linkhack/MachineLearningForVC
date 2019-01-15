@@ -124,19 +124,26 @@ class SVM:
         y_predict = np.zeros(len(Xnew))
 
         # label all xNew values
-        for i in range(len(Xnew)):
-            s = 0
-            for a, sv_t, sv_x in zip(sv, sv_T, sv_X):
-                if self.kernel == k.linearkernel:
-                    # print(sv_x)
-                    # print(Xnew[i])
+        # first * is componentwise, second is matrix multiplication
+        # self.kernel is a nr_of_data * nr_of_sv matrix
+        # gives nr_of_data many values
+        y_predict = sv * sv_T @ self.kernel(Xnew, sv_X).T
 
-                    s += a * sv_t * self.kernel(Xnew[i], sv_x)
-                elif self.kernel == k.rbfkernel:
-                    s += a * sv_t * self.kernel(Xnew[i], sv_x, self.sigma)
-                else:
-                    return 0
-            y_predict[i] = s
+        #statemant above written our
+
+        # for i in range(len(Xnew)):
+        #     s = 0
+        #     s2 = np.dot(sv*sv_T,self.kernel(Xnew[i],sv_X))
+        #     for a, sv_t, sv_x in zip(sv, sv_T, sv_X):
+        #         if self.kernel == k.linearkernel:
+
+        #             s += a * sv_t * self.kernel(Xnew[i], sv_x)
+        #         elif self.kernel == k.rbfkernel:
+        #             s += a * sv_t * self.kernel(Xnew[i], sv_x, self.sigma)
+        #         else:
+        #             return 0
+        #
+        #     y_predict[i] = s
 
         # return np.sign(y_predict + w0)
         # just return d(x)
