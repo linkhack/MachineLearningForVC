@@ -1,2 +1,46 @@
 \subsection{Implementation}
-\subsection{Results}
+The kernel trick is a way to add nonlinearity to the SVM model. This can be done efficiently with the kernel trick. We have already seen that we can make the decision boundry of a perceptron non linear by using a feature transform $\Phi: \mathbb{R}^n \leftarrow \mathbb{R}^m$. We have seen in the task before thatthe objective function of the quadratic program contains $ \frac{1}{2} \sum\limits_{i=1}^N \sum\limits_{j=1}^N\alpha_i\alpha_jt_it_j(x_i^tx_j)$. After the feature transform the inner product in this expression would be $\Phi(x_i)^t\Phi(x_j)$. For some feature transforms we can find a kernel $K$ such that $\Phi(x_i)^t\Phi(x_j)=K(x_i,x_j)$. This helps us by not having to calculate the feature transforms and we can use the same formulation and calculations for $\omega_0$ just by replacing the inner product with the Kernel. It is important to note that, without having a explicit $\Phi$, it doesn't make sense to calculate $\omega$. Therefor we have to use the discriminant function derived in task 1 by replacing the inner product with the kernel. The calculation of $\omega_0$ changes to 
+\[
+	\omega_0 = t_{i_{\max}} -  \sum\limits_{i=1}^N\alpha_i t_i K(\bm{x_i},\bm{x_{i_{\max}}}).
+\]
+
+We have used a radial basis function kernel of the form $K(x,y) = \exp(-\frac{\lnorm x-y \rnorm}{2\sigma^2})$. This leads to a high model complexity.
+
+Moreover we have seen that the formulation before has no solution if the dataset is not linearly separable and that the solution tends to overfit if we have too many training examples. This can be solved by introducing slack variables $\xi_i$ for $1 \leq i \leq N$. This variables will let the SVM model to missclassify examples, but only by incuring a additional cost. We use an additional parameter $C$ to control the additional cost for missclassified examples. The primal quadratic formulation of this is:
+\begin{align*}
+	\min&&  \frac{1}{2}\lVert w \rVert + C \sum\limits_{i=1}^N \xi_i &\\
+	\text{s.t.}&& (\omega^tx_i+w_0)t_i &\geq 1 - \xi_i &1 \leq i \leq N
+\end{align*}
+We can again reformulate this by considering the dual problam. This is given by following quadratic program
+\begin{align*}
+	\max&& - \frac{1}{2} \sum\limits_{i=1}^N \sum\limits_{j=1}^N&\alpha_i\alpha_jt_it_j(x_i^tx_j) +  \sum\limits_{i=1}^N \alpha_i &\\
+	\text{s.t.}&& \sum\limits_{i=1}^N\ \alpha_i t_i &= 0& \\
+	&&0\leq\alpha_i&\leq C& 1\leq i \leq N
+\end{align*}
+We can use most matrices for \texttt{cvxopt} as before, we only need to change $G$ and $h$, but this is very simple, but we have to b e more careful at calculating $\omega_0$ and $\omega$ as there are also wrongly classified support vectors. We pick again the support vector with the largest $\alpha_i$, say with $i = i_{\max}$, and then:
+\[
+	\omega = \sum\limits_{i=1}^N\alpha_i t_i \bm{x_i}
+\]
+and 
+\[
+	\omega_0 = t_{i_{\max}}(1- \xi_{i_{\max}}) - \omega^t\bm{x_{i_{\max}}}.
+\]
+If we use the kernel trick, the same as above holds and
+\[
+	\omega_0 = t_{i_{\max}}(1- \xi_{i_{\max}}) -  \sum\limits_{i=1}^N\alpha_i t_i K(\bm{x_i},\bm{x_{i_{\max}}}).
+\]
+
+All the sums are only taken over the support vectors, as all other $\alpha=0$.
+
+As small values of C allow many or strongly missclassified examples, we see that $C$ is a regularization parameter. This is especially important with rbf-SVM as the model complexity 
+
+\subsection{Results} 
+
+We first show the result of a SVM with radial basis function and slack in figure ...TODO. We used a $\sigma = 0.5$ and $C=50$. We see that the decision boundry and margin can  describe a very complex manifold.
+\begin{figure}
+	\includeqraphics[width = \textwidth]{task2_05_50}
+	\caption{A rbf-SVM with slack. $\sigma = 0.5$ and $C=50}
+	\ref{task2::example}
+\end{figure}
+
+We also wished to get an overview of what the effect the parameters $C$ and $\sigma$ do. 
