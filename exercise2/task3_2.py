@@ -223,22 +223,24 @@ plt.show()
 def cross_validation(data_sets,target_sets,sigma,C):
     "return the average test error rate of the SVM with rbfkernel, sigma and C with cross-validation "
     error_rate = []
-    nbre_sets = np.size(data_sets)
+    [nbre_sets,nbre_images,m,n] = data_sets.shape
+    print(nbre_sets)
     for k in range(0,nbre_sets):
         data_set = []
         target_set = []
         test_set = []
         for j in range(0,nbre_sets): #creation of the data set with all the images of the 150 datas except the number k
             if j != k:
-                for l in range(np.size(data_sets[j])):
-                    data_set.append(data_sets[j,l])
-                    target_set.append(target_sets[j,l])
+                print(np.size(data_sets[j]))
+                for l in range(nbre_images):
+                    data_set.append(data_sets[j,l,:,:])
+                    target_set.append(target_sets[j][l])
         data_set = np.array(data_set)
         target_set = np.array(target_set)
         data_set = mnf.transform_images(data_set) # get the matrix data
         
         test_set = mnf.transform_images(data_sets[k])
-        test_target = mnf.transform_images(target_sets[k])
+        test_target = target_sets[k]
         
         #initialisation the SVM
         svm = SVM()
@@ -253,8 +255,8 @@ def cross_validation(data_sets,target_sets,sigma,C):
 
 #%% cross-validation to get the best sigma and C
     
-C_range=[1,10,100,1000]
-Sigma_range=[0.5,1,1.5,3,6]
+C_range=[0.02*i for i in range(1,10000,100)]
+Sigma_range=[0.02*i for i in range(1,5000,100)]
 
 result = []
 sigma_C = []

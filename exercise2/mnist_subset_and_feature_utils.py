@@ -41,7 +41,7 @@ def get_digits(digits, nr_samples_in_class=35, nr_sets=1):
         targets_sets.append(targets)
         data_sets.append(data)
         
-    return data_sets, targets_sets
+    return np.array(data_sets), np.array(targets_sets)
 
 def get_test_digits(digits, nr_samples_in_class=200):
     data_set_complete = mnist.test_images()
