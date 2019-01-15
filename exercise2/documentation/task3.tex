@@ -10,10 +10,11 @@ For $k \in \{1,\ldots,M\}$ we trained both SVM and Perceptron using $\tau_k$ and
 \\
 \\
 The average error $R_{avg} = \frac{1}{M}\sum_{k=1}^M R_k$ of SVM and Perceptron can be seen in the table below (Table \ref{tab:avg_error}).
-Figure \ref{fig:error_SVM_perc} shows $\tau_k$.\\
+Figure \ref{fig:error_SVM_perc} shows $\tau_k$ with the error rate for $\tau_k$.\\
 
-Against our expectations SVM does not perform as well as suspected, which could be due to the use of the linear Kernel and $C=\infty$ (no slack variables).
-Otherwise we would have suspeceted the SVM would have found a decision boundary similar or better than Perceptron.
+As we can see the
+%Against our expectations SVM does not perform as well as suspected, which could be due to the use of the linear Kernel and $C=\infty$ (no slack variables).
+%Otherwise we would have suspeceted the SVM would have found a decision boundary similar or better than Perceptron.
 
 \begin{table}[!h]
  \begin{center}
@@ -21,7 +22,7 @@ Otherwise we would have suspeceted the SVM would have found a decision boundary 
  \hline
  \textbf{$R_{avg}$ SVM} & \textbf{ $R_{avg}$ Perceptron} \\
  \hline
- 0.07329339987931965       &     0.028047619047619037      \\
+ 0.01441156462585034       &     0.027952380952380954      \\
  \hline
 \end{tabular}
 \caption{\label{tab:avg_error} $R_{avg}$ for both algorithms }
@@ -31,7 +32,7 @@ Otherwise we would have suspeceted the SVM would have found a decision boundary 
 \begin{figure}[!h]
 \begin{center}
 \centering
-\includegraphics[width=1\textwidth]{figures/lin_svm_perc_error.png}
+\includegraphics[width=1\textwidth]{figures/perc_svn_comparison.png}
 \end{center}
 \caption{\label{fig:error_SVM_perc} Comparing the error rates of $\tau_k$ from SVM (blue) against Perceptron(red) }
 \end{figure}
@@ -41,7 +42,6 @@ Otherwise we would have suspeceted the SVM would have found a decision boundary 
 \subsection{Tuning meta-parameters $C$ and $\sigma$}
 
 This last section describes the effects of changing $C$ and $\sigma$ when using a RBF-kernel. In general $C$, a slack varibale, allows to not meet the margin requirement at a cost proportional to a value, which still allows us to minimize the error, but relaxes the stiffnes of linear separability.
-
 
 
 \begin{figure}[!h]
