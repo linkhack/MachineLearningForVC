@@ -95,7 +95,7 @@ for sigma in Sigma_range:
         target_set = target_sets[i]
         
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T ) # calculation of predicted target for swm
+        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T) # calculation of predicted target for swm
         SVM_error_rate_1.append(t_pl.error_rate(predicted_targets_svm,test_target))
     Sigma_error_rate.append(sum(SVM_error_rate_1)/150)
     
@@ -117,7 +117,7 @@ for C in C_range:
         target_set = target_sets[i]
         
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set,t=target_set,Xnew=data_set) # calculation of predicted target for swm
+        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=data_set.T) # calculation of predicted target for swm
         SVM_error_rate_0.append(t_pl.error_rate(predicted_targets_svm,target_set))
     C_error_rate_2.append(sum(SVM_error_rate_2)/150)
 
@@ -134,7 +134,7 @@ for sigma in Sigma_range:
         target_set = target_sets[i]
         
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set,t=target_set,Xnew=data_set) # calculation of predicted target for swm
+        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=data_set.T) # calculation of predicted target for swm
         SVM_error_rate_1.append(t_pl.error_rate(predicted_targets_svm,target_set))
     Sigma_error_rate_2.append(sum(SVM_error_rate_3)/150)
     
