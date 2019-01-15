@@ -15,8 +15,11 @@ c_range = [1,10,100]
 sigma_range = [0.1, 1, 5]
 ## Importation of the set from the first exercice
 
-training_set, training_targets = utils.get_digits(digits, 500)
+training_set, training_targets = utils.get_digits(digits, 30)
+test_set, test_targets = utils.get_test_digits(digits, 10000)
+
 features = utils.calculate_features(training_set)
+test_features = utils.calculate_features(test_set)
 
 ## Creation of the SVM
 
@@ -41,6 +44,10 @@ t_pl.plot(features.T, training_targets, w0, alpha, sv_index, svm)
 # t_pl.plot_SVM(alpha,w0,positions,features,training_targets,features,training_targets,kernel=kernel.rbfkernel,sigma=sigma)
 index = 1
 fig = plt.figure(figsize=(12, 12))
+error_rate = np.zeros((3, 3))
+error_rate_test = np.zeros((3, 3))
+i=0
+j=0
 for sigma in sigma_range:
     for c in c_range:
         plt.subplot(3,3,index)
@@ -59,5 +66,15 @@ for sigma in sigma_range:
 
         # draw margin
         t_pl.plot(features.T, training_targets, w0, alpha, sv_index, svm)
+
+        pred_test = np.sign(svm.discriminant(alpha,w0,features.T,training_targets,test_features.T))
+        pred_train = np.sign(svm.discriminant(alpha,w0,features.T,training_targets,features.T))
+        error_rate[i,j] = t_pl.error_rate(pred_train,training_targets)
+        error_rate_test[i,j] = t_pl.error_rate(pred_test,test_targets)
         index+=1
+        j+=1
+    i+=1
+    j=0
 plt.show()
+print(np.array_str(error_rate))
+print(np.array_str(error_rate_test))
