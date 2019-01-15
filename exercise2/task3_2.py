@@ -248,7 +248,7 @@ def cross_validation(data_sets,target_sets,sigma,C):
         
         #trained the SVM on the data set        
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.rbfkernel, c=C)
-        predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_set.T)
+        predicted_targets_svm = np.sign(svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_set.T))
         error_rate.append(t_pl.error_rate(predicted_targets_svm,test_target))
         
     return (sum(error_rate)/nbre_sets)
@@ -294,7 +294,7 @@ for i in range(0,nr_sets):
    
    [alpha, w0, positions] = svm.trainSVM(data_set, target_set, kernel.rbfkernel, c= C_opti)
 
-   predicted_targets_svm = svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T) # calculation of predicted target for swm
+   predicted_targets_svm = np.sign(svm.discriminant(alpha=alpha,w0=w0,X=data_set.T,t=target_set,Xnew=test_data.T)) # calculation of predicted target for swm
    SVM_error_rate_opti.append(t_pl.error_rate(predicted_targets_svm,test_target))
    
 SVM_error_opti = sum(SVM_error_rate_opti)/150
