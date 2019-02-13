@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 
 
 def get_digits(digits, nr_samples_in_class=35, nr_sets=1):
+    """return a database of 150 dataset of75 datasamples"""
     data_set_complete = mnist.train_images()
     targets_complete = mnist.train_labels()
     digit1_indices = np.where(targets_complete == digits[0])[0]
@@ -37,6 +38,7 @@ def get_digits(digits, nr_samples_in_class=35, nr_sets=1):
         unsigned_targets = targets_complete[indices[i]]
         targets[unsigned_targets == digits[0]] = 1
         targets[unsigned_targets == digits[1]] = -1
+        data = transform_images(data) # data are written in matrix with samples by column
         
         targets_sets.append(targets)
         data_sets.append(data)

@@ -39,7 +39,7 @@ for i in range(0,nr_sets):
     ## SVM
 
    svm = SVM()
-   data_set = mnf.transform_images(data_sets[i])
+   data_set = data_sets[i]
    target_set = target_sets[i]
    
    [alpha, w0, positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel)
@@ -108,7 +108,7 @@ for C in C_range:
         ## SVM
         svm = SVM()
         svm.setSigma(sigma)
-        data_set = mnf.transform_images(data_sets[i])
+        data_set = data_sets[i]
         target_set = target_sets[i]
         
         [alpha, w0,positions] = svm.trainSVM(data_set, target_set, kernel.rbfkernel, c=C)
@@ -129,7 +129,7 @@ for sigma in Sigma_range:
         ## SVM
         svm = SVM()
         svm.setSigma(sigma)
-        data_set = mnf.transform_images(data_sets[i])
+        data_set = data_sets[i]
         target_set = target_sets[i]
         
 
@@ -177,7 +177,7 @@ for C in C_range:
         ## SVM
         svm = SVM()
         svm.setSigma(sigma)
-        data_set = mnf.transform_images(data_sets[i])
+        data_set = data_sets[i]
         target_set = target_sets[i]
         
 
@@ -234,7 +234,7 @@ def cross_validation(data_sets,target_sets,sigma,C):
                 print(np.size(data_sets[j]))
                 for l in range(nbre_images):
                     data_set.append(data_sets[j,l,:,:])
-                    target_set.append(target_sets[j][l])
+                    target_set.append(target_sets[j,l])
         data_set = np.array(data_set)
         target_set = np.array(target_set)
         data_set = mnf.transform_images(data_set) # get the matrix data

@@ -9,9 +9,13 @@ class SVM:
         """contructor"""
         # to be used with rbfKernels see exercise2.Kernel for function
         self.sigma = 5.0
+        #for cross-validation
+        self.databasecv = np.zeros(2)
+        self.targetbasecv = np.zeros(2)
 
     def setSigma(self, sigma):
         self.sigma = sigma
+        
 
     def trainSVM(self, x, t, kernel=k.linearkernel, c=None):
         """
@@ -151,3 +155,168 @@ class SVM:
         # return np.sign(y_predict + w0)
         # just return d(x)
         return y_predict + w0
+    
+    def SetCV(self,databasecv,targetbasecv):
+        """ give the database of 150 datasets of 75 samples as an attribut of the SVM"""
+        self.databasecv = databasecv
+        self.targetbasecv = targetbasecv
+        
+    def SetGram(self,kernel=k.linearkernel):
+        """calculation of the whole gram matrixfor the 150 sets of 75 in case of the CV"""
+        nSet, nFeature, nSample = self.databasecv.shape
+        Dim = nSet*nSample
+        
+        gram_matrix = np.zeros((Dim,Dim))
+        
+        for i in range(0,nSet):
+            for j in range(0,nSample):
+                for p in range(0,i-1):
+                    for q in range(0,nSample):
+                        pos_x = i*nSample+j
+                        pos_y = p*nSample+q
+                        value = self.kernel(databasecv[i,:,j],databasecv[p,:,q])#calculation of the kernel between the jth sample of the ith dataset and the qth sample of the jth dataset
+                        gram_matrix[pos_x,pos_y] = value
+                        gram_matrix[pos_y,pos_x] = value #gram matrix is symetrical
+                p = i
+                for q in range(0,j+1):
+                    pos_x = i*nSample+j
+                    pos_y = p*nSample+q
+                    value = self.kernel(databasecv[i,:,j],databasecv[p,:,q])#calculation of the kernel between the jth sample of the ith dataset and the qth sample of the jth dataset
+                    gram_matrix[pos_x,pos_y] = value
+                    gram_matrix[pos_y,pos_x] = value #gram matrix is symetrical
+                    
+        self.gram_matrix = gram_matrix
+        
+        
+    def trainSVM_CV(self,k,kernel=k.linearkernel, c = None):
+        """ k corresponds to the rank of the dataset in the  self.databasecv which will be used as the test set"""
+        self.c = c
+        self.kernel = kernel
+        # self.sigma  = sigma
+
+        # get some dimensions
+        nSet, nFeature, nSample = self.databasecv.shape
+        
+        Dim = (nSet-1)*nSample
+        
+        gram_matrix_2 = np.zeros((Dim,Dim))
+        
+        """ i don't know if there is a numpy function that can extract a sub matrix from a matrix 
+        getting rid of specific columns and lines, if yes the following part can be replaced""" 
+        
+        for i in range(0,k):# we mustn't take into account the kth dataset
+            for j in range(0,nSample):
+                for p in range(0,i-1):
+                    for q in range(0,nSample):
+                        pos_x = i*nSample+j
+                        pos_y = p*nSample+q
+                        value = self.gram_matrix[pos_x,pos_y]#
+                        gram_matrix_2[pos_x,pos_y] = value
+                        gram_matrix_2[pos_y,pos_x] = value
+                p = i
+                for q in range(0,j+1):
+                    pos_x = i*nSample+j
+                    pos_y = p*nSample+q
+                    value = self.gram_matrix[pos_x,pos_y]
+                    gram_matrix_2[pos_x,pos_y] = value
+                    gram_matrix_2[pos_y,pos_x] = value #gram matrix is symetrical
+        
+        for i in range(k+1,nSet): # we skip the k th dataset
+            for j in range(0,nSample):
+                for p in range(0,k):
+                    for q in range(0,nSample):
+                        pos_x = (i-1)*nSample+j # i-1 as we skip the kth value
+                        pos_y = p*nSample+q
+                        value = self.gram_matrix[pos_x + nSample,pos_y]#
+                        gram_matrix_2[pos_x,pos_y] = value
+                        gram_matrix_2[pos_y,pos_x] = value
+                
+                for p in range(k+1,i):
+                    for q in range(0,nSample):
+                        pos_x = (i-1)*nSample+j # i-1 as we skip the kth value
+                        pos_y = (p-1)*nSample+q
+                        value = self.gram_matrix[pos_x + nSample,pos_y + nSample]#
+                        gram_matrix_2[pos_x,pos_y] = value
+                        gram_matrix_2[pos_y,pos_x] = value
+                
+                p = i
+                for q in range(0,j+1):
+                    pos_x = (i-1)*nSample+j
+                    pos_y = (p-1)*nSample+q
+                    value = self.gram_matrix[pos_x + nSample,pos_y + nSample]
+                    gram_matrix_2[pos_x,pos_y] = value
+                    gram_matrix_2[pos_y,pos_x] = value #gram matrix is symetrical
+                    
+        """End of calculation of Gram Matrix , we then use the same algorithm as for Train_SVM """
+        
+        #calculation of the target set of (nSet-1)*nSample value
+        
+        t = np.zeros((Dim,1))
+        compt = 0
+        
+        for i in range(0,nSet):
+            if i != k:
+                for j in range(0,nSample):
+                    t[nSample*compt+j,1] = self.targetbasecv[i,j]
+                compt += 1 # take into account if we have skipped k or not
+                
+            
+        # prepare arguments for solver:
+        nSamples = (nSet-1)*nSample # total number of training exemples
+        
+        # we need to minify a constrained quadratic program
+        # min x : 1/2 xT P x + qT x
+        P = cvxopt.matrix(np.outer(t, t) * gram_matrix_2, tc='d')
+        q = cvxopt.matrix(np.ones(nSamples) * -1, tc='d')
+        # equivalent constraints: Ax = b
+        A = cvxopt.matrix(t, (1, nSamples), tc='d')
+        b = cvxopt.matrix(0.0, tc='d')
+        # unequivalent constraints: Gx <= h
+        if self.c is None:
+            # hard margin
+            G = cvxopt.matrix(np.diag(np.ones(nSamples) * -1), tc='d')
+            h = cvxopt.matrix(np.zeros(nSamples), tc='d')
+        else:
+            ##with slack variable, a.k.a. soft margin!
+            partA = np.diag(np.ones(nSamples) * -1)
+            partB = np.identity(nSamples)
+            G = cvxopt.matrix(np.vstack((partA, partB)), tc='d')
+
+            partA = np.zeros(nSamples)
+            partB = np.ones(nSamples) * self.c
+            h = cvxopt.matrix(np.hstack((partA, partB)), tc='d')
+
+        # call the solver with our arguments
+        cvxopt.solvers.options['show_progress'] = False
+        solution = cvxopt.solvers.qp(P, q, G, h, A, b)
+        # Lagrange multipliers
+        alpha = np.ravel(solution['x'])
+        slack = np.ravel(solution['z'])
+
+        # Support vectors have non zero lagrange multipliers
+        sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
+
+        # position index of support vectors in alpha array
+        ind = np.arange(len(alpha))[sv_index]
+
+        # get support vectors and corresponding x and label values
+        sv = alpha[sv_index]
+        # sv_X = x[:,sv_index]
+        sv_T = t[sv_index]
+
+        # calculate w0
+        main_sv_index = np.argmax(alpha)
+        if self.c is None:
+            w0 = t[main_sv_index] - np.sum(sv * sv_T * gram_matrix_2[sv_index, main_sv_index])
+        else:
+            w0 = t[main_sv_index] * (1 - slack[main_sv_index + len(t)])  # interested in associated slack variable
+            w0 = w0 - np.sum(sv * sv_T * gram_matrix_2[sv_index, main_sv_index])
+
+        return [alpha, w0, sv_index]
+                
+                    
+                        
+                
+
+        
+        
