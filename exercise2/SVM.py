@@ -182,7 +182,7 @@ class SVM:
         """calculation of the whole gram matrixfor the 150 sets of 75 in case of the CV"""
         nSet, nFeature, nSample = self.databasecv.shape
         Dim = nSet*nSample
-        
+        self.kernel = kernel
         gram_matrix = np.zeros((Dim,Dim))
         
         for i in range(0,nSet):
@@ -191,24 +191,33 @@ class SVM:
                     for q in range(0,nSample):
                         pos_x = i*nSample+j
                         pos_y = p*nSample+q
-                        value = self.kernel(databasecv[i,:,j],databasecv[p,:,q])#calculation of the kernel between the jth sample of the ith dataset and the qth sample of the jth dataset
+                        if kernel == k.linearkernel:
+                            value = self.kernel(self.databasecv[i,:,j],self.databasecv[p,:,q])#calculation of the kernel between the jth sample of the ith dataset and the qth sample of the jth dataset
+                        elif kernel == k.rbfkernel:
+                            value = self.kernel(self.databasecv[i,:,j],self.databasecv[p,:,q],self.sigma)
+                        else:
+                            value = 0
                         gram_matrix[pos_x,pos_y] = value
                         gram_matrix[pos_y,pos_x] = value #gram matrix is symetrical
                 p = i
                 for q in range(0,j+1):
                     pos_x = i*nSample+j
                     pos_y = p*nSample+q
-                    value = self.kernel(databasecv[i,:,j],databasecv[p,:,q])#calculation of the kernel between the jth sample of the ith dataset and the qth sample of the jth dataset
+                    if kernel == k.linearkernel:
+                            value = self.kernel(self.databasecv[i,:,j],self.databasecv[p,:,q])#calculation of the kernel between the jth sample of the ith dataset and the qth sample of the jth dataset
+                    elif kernel == k.rbfkernel:
+                            value = self.kernel(self.databasecv[i,:,j],self.databasecv[p,:,q],self.sigma)
+                    else:
+                        value = 0
                     gram_matrix[pos_x,pos_y] = value
                     gram_matrix[pos_y,pos_x] = value #gram matrix is symetrical
                     
         self.gram_matrix = gram_matrix
         
         
-    def trainSVM_CV(self,k,kernel=k.linearkernel, c = None):
+    def trainSVM_CV(self,k, c = None):
         """ k corresponds to the rank of the dataset in the  self.databasecv which will be used as the test set"""
-        self.c = c
-        self.kernel = kernel
+        self.c = c        
         # self.sigma  = sigma
 
         # get some dimensions
