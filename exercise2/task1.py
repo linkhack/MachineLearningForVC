@@ -30,7 +30,8 @@ colors = {-1: 'red', 1: 'blue'}
 
 # part 2: SVM with hard margin
 svm = SVM()
-svm.setSigma(1.5)
+svm.setSigma(2.4)
+
 
 X = np.transpose(X)
 # svm with linear kernel
@@ -40,7 +41,7 @@ X = np.transpose(X)
 #[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.linearkernel, 1)
 
 # svm with rbf kernel
-[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel)
+[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel,100.1)
 
 # svm with rbf kernel and slack
 # [alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel,100)

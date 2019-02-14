@@ -10,8 +10,8 @@ import exercise1.part1.mnist_subset_and_feature_utils as utils
 ##importants datas
 digits = [0, 7]
 sigma = 0.5
-C = 50
-c_range = [1,10,100]
+C = 0.50
+c_range = [5,10,100]
 sigma_range = [0.1, 1, 5]
 ## Importation of the set from the first exercice
 

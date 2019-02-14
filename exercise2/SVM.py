@@ -89,22 +89,39 @@ class SVM:
         alpha = np.ravel(solution['x'])
         slack = np.ravel(solution['z'])
 
-        # Support vectors have non zero lagrange multipliers
-        sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
-
-        # position index of support vectors in alpha array
-        ind = np.arange(len(alpha))[sv_index]
-
-        # get support vectors and corresponding x and label values
-        sv = alpha[sv_index]
-        # sv_X = x[:,sv_index]
-        sv_T = t[sv_index]
-
-        # calculate w0
-        main_sv_index = np.argmax(alpha)
         if self.c is None:
+            # Support vectors have non zero lagrange multipliers
+            sv_index = alpha > 1e-4  # some small threshold a little bit greater than 0, [> 0  was too crowded]
+
+            # position index of support vectors in alpha array
+            ind = np.arange(len(alpha))[sv_index]
+
+            # get support vectors and corresponding x and label values
+            sv = alpha[sv_index]
+            # sv_X = x[:,sv_index]
+            sv_T = t[sv_index]
+
+            # calculate w0
+            main_sv_index = np.argmax(alpha)
             w0 = t[main_sv_index] - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
         else:
+            sv_index = (alpha > 1e-4)
+            small_index = (alpha < self.c - 1e-4)
+            alpha_support = np.zeros_like(alpha)
+            alpha_support[small_index & sv_index] = alpha[small_index & sv_index]
+            if np.all(~(sv_index&small_index)):
+                print("No support vectors found")
+                #return [alpha, 0, sv_index]
+            # get support vectors and corresponding x and label values
+
+            sv = alpha[sv_index]
+            # sv_X = x[:,sv_index]
+            sv_T = t[sv_index]
+
+            # calculate w0
+            main_sv_index = np.argmax(alpha_support)
+
+            #w0 = t[main_sv_index] - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
             w0 = t[main_sv_index] * (1 - slack[main_sv_index + len(t)])  # interested in associated slack variable
             w0 = w0 - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
 
@@ -293,24 +310,41 @@ class SVM:
         alpha = np.ravel(solution['x'])
         slack = np.ravel(solution['z'])
 
-        # Support vectors have non zero lagrange multipliers
-        sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
-
-        # position index of support vectors in alpha array
-        ind = np.arange(len(alpha))[sv_index]
-
-        # get support vectors and corresponding x and label values
-        sv = alpha[sv_index]
-        # sv_X = x[:,sv_index]
-        sv_T = t[sv_index]
-
-        # calculate w0
-        main_sv_index = np.argmax(alpha)
         if self.c is None:
-            w0 = t[main_sv_index] - np.sum(sv * sv_T * gram_matrix_2[sv_index, main_sv_index])
+            # Support vectors have non zero lagrange multipliers
+            sv_index = alpha > 1e-4  # some small threshold a little bit greater than 0, [> 0  was too crowded]
+
+            # position index of support vectors in alpha array
+            ind = np.arange(len(alpha))[sv_index]
+
+            # get support vectors and corresponding x and label values
+            sv = alpha[sv_index]
+            # sv_X = x[:,sv_index]
+            sv_T = t[sv_index]
+
+            # calculate w0
+            main_sv_index = np.argmax(alpha)
+            w0 = t[main_sv_index] - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
         else:
+            sv_index = (alpha > 1e-4)
+            small_index = (alpha < self.c - 1e-4)
+            alpha_support = np.zeros_like(alpha)
+            alpha_support[small_index & sv_index] = alpha[small_index & sv_index]
+            if np.all(~(sv_index&small_index)):
+                print("No support vectors found")
+                #return [alpha, 0, sv_index]
+            # get support vectors and corresponding x and label values
+
+            sv = alpha[sv_index]
+            # sv_X = x[:,sv_index]
+            sv_T = t[sv_index]
+
+            # calculate w0
+            main_sv_index = np.argmax(alpha_support)
+
+            #w0 = t[main_sv_index] - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
             w0 = t[main_sv_index] * (1 - slack[main_sv_index + len(t)])  # interested in associated slack variable
-            w0 = w0 - np.sum(sv * sv_T * gram_matrix_2[sv_index, main_sv_index])
+            w0 = w0 - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
 
         return [alpha, w0, sv_index]
                 
