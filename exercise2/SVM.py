@@ -314,7 +314,37 @@ class SVM:
 
         return [alpha, w0, sv_index]
                 
-                    
+    def discriminant_CV(self, alpha, w0, k):
+        """ calculation of the predicted values for the  kth dataset for a SVM trained on all the databases except the kth"""
+        # Support vectors have non zero lagrange multipliers
+        sv_index = alpha > 1e-5  # some small threshold a little bit greater than 0, [> 0  was too crowded]
+        
+        # now we want to calculate the index in the whole gram matrix as for the training we skipped the kth dataset
+        
+        nSet, nFeature, nSample = self.databasecv.shape                
+        
+        nbr_sv = np.size(sv_index)
+        
+        index = np.zeros((nbr_sv,1))
+        
+        for i in range(0,nbr_sv):
+            pos = sv_index[i]
+            if pos < k*nSample:
+                index[i]=sv_index[i]
+            else:
+                index[i]= sv_index[i]+nSample #if the SV belongs to a dataset  after the kth position, we have to add the number of datasample in the kth data to have its position in the big gram matrix
+        
+        predict = np.zeros((nSample,1))
+        
+        for i in range(0,nSample):
+            value = w0
+            for j in range(0,nbr_sv):
+                value += alpha[j]*self.gram_matrix[k*nSample+i , index[j]]
+            predict[i] = value
+            
+        return predict
+          
+             
                         
                 
 
