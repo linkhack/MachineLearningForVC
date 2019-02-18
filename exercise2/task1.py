@@ -32,16 +32,14 @@ colors = {-1: 'red', 1: 'blue'}
 svm = SVM()
 svm.setSigma(2.4)
 
-
-X = np.transpose(X)
 # svm with linear kernel
 #[alpha, w0, sv_index] = svm.trainSVM(X, t)
 
 # svm with linear kernel and slack variable
-#[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.linearkernel, 1)
+[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.linearkernel, 1)
 
 # svm with rbf kernel
-[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel,100.1)
+#[alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel,100.1)
 
 # svm with rbf kernel and slack
 # [alpha, w0, sv_index] = svm.trainSVM(X, t, kernel.rbfkernel,100)
@@ -52,7 +50,6 @@ for i, group in grouped:
     color = colors[i]
     group.plot(ax=axis, kind='scatter', x='x', y='y', label=i, color=color)
 
-X = np.transpose(X)
 # draw margin
 plot.plot(X, t, w0, alpha, sv_index, svm)
 
@@ -64,7 +61,7 @@ X_test, t_test = make_blobs(n_samples=400, centers=[[-2, -2], [2, 2]], n_feature
 mask = t_test <= 0
 t_test[mask] = -1
 
-predicted_labels_test = np.sign(svm.discriminant(alpha, w0, X, t, X_test))
+predicted_labels_test = np.sign(svm.discriminant(alpha, w0, sv_index, X, t, X_test))
 
 # Error rate
 error_rate = plot.error_rate(predicted_labels_test, t_test)

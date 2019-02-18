@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 
 def get_digits(digits, nr_samples_in_class=35, nr_sets=1):
-    """return a database of 150 dataset of75 datasamples"""
+    """return a database of 150 dataset of 75 datasamples"""
     data_set_complete = mnist.train_images()
     targets_complete = mnist.train_labels()
     digit1_indices = np.where(targets_complete == digits[0])[0]
@@ -43,6 +43,45 @@ def get_digits(digits, nr_samples_in_class=35, nr_sets=1):
         targets_sets.append(targets)
         data_sets.append(data)
         
+    return np.array(data_sets), np.array(targets_sets)
+
+
+def get_digits_compact(digits, nr_samples_in_class=35, nr_sets=1):
+    """
+    return a database of k dataset of n datasamples
+    where the dataset i has indices i::k
+    """
+    data_set_complete = mnist.train_images()
+    targets_complete = mnist.train_labels()
+    digit1_indices = np.where(targets_complete == digits[0])[0]
+    digit2_indices = np.where(targets_complete == digits[1])[0]
+
+    indices_1 = []
+    indices_2 = []
+    for i in range(0, nr_sets):
+        dig_indics_1 = digit1_indices[i * nr_samples_in_class:(i + 1) * nr_samples_in_class]
+        dig_indics_2 = digit2_indices[i * nr_samples_in_class:(i + 1) * nr_samples_in_class]
+        indices_1.append(dig_indics_1)
+        indices_2.append(dig_indics_2)
+
+    # important if first all 1 then all -1 gives not a good result
+    indices = []
+    for i in range(0, nr_sets):
+        indices.append(np.random.permutation(np.concatenate((indices_1[i], indices_2[i]))))
+
+    data_sets = np.zeros((2*nr_sets*nr_samples_in_class,data_set_complete[0,:,:].size))
+    targets_sets = np.zeros((2*nr_samples_in_class*nr_sets))
+    for i in range(0, nr_sets):
+        data = data_set_complete[indices[i], :, :]
+        targets = np.zeros(2 * nr_samples_in_class)
+        unsigned_targets = targets_complete[indices[i]]
+        targets[unsigned_targets == digits[0]] = 1
+        targets[unsigned_targets == digits[1]] = -1
+        data = transform_images(data)  # data are written in matrix with samples by column
+
+        targets_sets[i::nr_sets] = targets[:]
+        data_sets[i::nr_sets,:] = data.T
+
     return np.array(data_sets), np.array(targets_sets)
 
 def get_test_digits(digits, nr_samples_in_class=200):

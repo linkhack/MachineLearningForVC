@@ -10,11 +10,9 @@ def perceptron_online_training(training_set, targets, max_iterations):
     data_dimension = np.size(training_set, 0)
     nr_of_datapoints = np.size(training_set, 1)
     weights = np.zeros(data_dimension)
-    avg_weight = np.zeros(data_dimension)
 
     for i in range(max_iterations):
         weights = update_weights(training_set[:, i % nr_of_datapoints], targets[i % nr_of_datapoints], weights)
-        avg_weight = i/(i+1) * avg_weight + weights/(i+1)
         if np.all(perc(weights, training_set) == targets):
             return weights
     return weights

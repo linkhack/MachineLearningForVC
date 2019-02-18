@@ -13,7 +13,7 @@ nr_sample = 35
 digits = [0,7]
 
 ## value to change
-sigma = 2
+sigma = 30
 C = 100
 
 """ initialisation of the data:
@@ -48,7 +48,7 @@ for i in range(0,nr_sets):
    SVM_error_rate.append(t_pl.error_rate(predicted_targets_svm,test_target))
 
    svm = SVM()
-   [alpha, w0, positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel, c=0.1 )
+   [alpha, w0, positions] = svm.trainSVM(data_set, target_set, kernel.linearkernel, c=100)
 
    predicted_targets_svm = np.sign(svm.discriminant(alpha=alpha, w0=w0, X=data_set.T, t=target_set,
                                              Xnew=test_data.T))  # calculation of predicted target for swm
@@ -88,7 +88,7 @@ plt.show()
 #%% Analysing the effect of changing C and sigma on the average test error rate:
 
 C_range=[1,10,100,1000]
-Sigma_range=[0.5,1,1.5,3,6]
+Sigma_range=[1,10,30,50,100]
 
 C_error_rate= []
 Sigma_error_rate=[]

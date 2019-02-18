@@ -72,7 +72,7 @@ def plot(X, t, w0, alpha, sv_index, svm):
     X_new = np.array([[x1, x2] for x1, x2 in zip(np.ravel(X1), np.ravel(X2))])
 
     # calculate discriminante for all points in space
-    Z = svm.discriminant(alpha, w0, X, t, X_new).reshape(X1.shape)
+    Z = svm.discriminant(alpha, w0, sv_index, X, t, X_new).reshape(X1.shape)
 
     plt.contour(X1, X2, Z, [0.0], colors='grey')
     plt.contour(X1, X2, Z + 1, [0.0], colors='grey', linestyles='dashed')

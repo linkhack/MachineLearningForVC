@@ -37,7 +37,7 @@ def cross_validation(database,targetbase,sigma, C_range):
     it returns an array with the same size than the C array, which gives the error rate for each C
     """
     nbr_C = C_range.shape
-    Error_rates = np.zeros((nbr_C,1))
+    Error_rates = np.zeros(nbr_C)
     
     nSet, nFeature, nSample = database.shape
     
@@ -47,13 +47,13 @@ def cross_validation(database,targetbase,sigma, C_range):
     svm_CV.setSigma(sigma)
     
     svm_CV.setCV(database,targetbase)
-    svm_CV.SetGram(kernel.rbfkernel)
+    svm_CV.setGram(kernel.rbfkernel)
     
     for i in range(0,nbr_C):
         C = C_range[i]
         error_rate = np.zeros((nSet,1))
         for k in range(0,nSet):
-            [alpha, w0,positions] = svm_CV.trainSVM_CV(k, c=C)
+            [alpha, w0, positions] = svm_CV.trainSVM_CV(k, c=C)
             
             predictions = svm_CV.discriminant_CV(alpha, w0, k)
             

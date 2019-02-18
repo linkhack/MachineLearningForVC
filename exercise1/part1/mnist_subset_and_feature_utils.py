@@ -48,8 +48,7 @@ def calculate_features(image_array, props=None):
     if props is None or len(props) < 2:
         props = ['solidity', 'eccentricity']
     prop_dict = collect_regionprops(image_array, props)
-    feature_vector = np.array([[feature_dict[props[0]] for feature_dict in prop_dict],
-                               [feature_dict[props[1]] for feature_dict in prop_dict]])
+    feature_vector = np.array([[feature_dict[props[0]], feature_dict[props[1]]] for feature_dict in prop_dict])
 
     return feature_vector
 
