@@ -81,11 +81,17 @@ def main():
     for i in enumerate(c_range):
         plt.plot(sigma_range, avg_test_error[(len(sigma_range)*i[0]):(len(sigma_range)*(i[0]+1))], label=f"c={i[1]}")
     plt.legend()
+    plt.title("Test error for sigma and c")
+    plt.xlabel("Sigma")
+    plt.ylabel("Test Error")
     plt.show()
 
     for i in enumerate(c_range):
-        plt.plot(sigma_range, avg_test_error[(len(sigma_range)*i[0]):(len(sigma_range)*(i[0]+1))], label=f"c={i[1]}")
+        plt.plot(sigma_range, avg_train_error[(len(sigma_range)*i[0]):(len(sigma_range)*(i[0]+1))], label=f"c={i[1]}")
     plt.legend()
+    plt.title("Training Error for sigma and c")
+    plt.xlabel("Sigma")
+    plt.ylabel("Test Error")
     plt.show()
 
 
