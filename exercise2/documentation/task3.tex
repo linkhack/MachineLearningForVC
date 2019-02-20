@@ -1,17 +1,13 @@
 \subsection{Model-complexity and model-selection}
-
-
 In this section we try to compare the performances of the Perceptron, we implemened during the first assignment against the SVM from this one.
 Since the Perceptron can only handle linearly separable data, we will use a SVM with hard margin and linear Kernel for this comparison.
-\\
-\\
+
 To select a proper test set we selected $M = 150$ training sets $\tau _{k},k \in \{1,\ldots,M\}$ form the MNIST training set with no more than $N = 70$ images each.
-For $k \in \{1,\ldots,M\}$ we trained both SVM and Perceptron using $\tau_k$ and calculated the test error rate $R_k = \sum_{i=1}^{n}( (t_{i}^{\ast} - \hat{t_{i}} )^2 * \frac{1}{4n} ) $ on the {MNIST} test set - again for both SVM and Perceptron.
-\\
-\\
+For $k \in \{1,\ldots,M\}$ we trained both SVM and Perceptron using $\tau_k$ and calculated the test error rate $R_k = \sum_{i=1}^{N}( (t_{i}^{\ast} - \hat{t_{i}} )^2 * \frac{1}{4N} ) $ on the {MNIST} test set - again for both SVM and Perceptron.
+
 The average error $R_{avg} = \frac{1}{M}\sum_{k=1}^M R_k$ of SVM and Perceptron can be seen in the table below (Table \ref{tab:avg_error}).
 Figure \ref{fig:error_SVM_perc} shows $\tau_k$ with the error rate for $\tau_k$.\\
-As we can see in figure \ref{fig:error_SVM_perc_boxplot} the SVM has a more stable detection rate.
+As we can see in figure \ref{fig:error_SVM_perc} the SVM has a more stable detection rate. The error rate on the test set for the perceptron is strongly influenced by the chosen training set and can vary by an orther of magnitude.
 
 %As we can see performs the SVM already better than the Perceptrom, which still has to be verified.
 %Against our expectations SVM does not perform as well as suspected, which could be due to the use of the linear Kernel and $C=\infty$ (no slack variables).
@@ -34,53 +30,39 @@ As we can see in figure \ref{fig:error_SVM_perc_boxplot} the SVM has a more stab
 \caption{\label{tab:avg_error} $R_{avg}$ for both algorithms }
 \end{center}
 \end{table}
-
 \begin{figure}[!h]
 \begin{center}
 \centering
-\includegraphics[width=1\textwidth]{figures/new/perc_vs_svm}
-\includegraphics[width=1\textwidth]{figures/new/perc_vs_svm_boxplot}
+\includegraphics[width=0.45\textwidth]{figures/new/perc_vs_svm}
+\includegraphics[width=0.45\textwidth]{figures/new/perc_vs_svm_boxplot}
 \end{center}
 \caption{\label{fig:error_SVM_perc} Comparing the error rates of $\tau_k$ from SVM (blue/1 ) against Perceptron(red/2) }
 \end{figure}
-
-
-
 \subsection{Tuning meta-parameters $C$ and $\sigma$}
-
 This last section describes the effects of changing $C$ and $\sigma$ when using a RBF-kernel. In general $C$, a slack varibale, allows to not meet the margin requirement at a cost proportional to a value, which still allows us to minimize the error, but relaxes the stiffnes of linear separability.
 
-
-To get a better understanding we took 150 sets from the MNIST training set with 70 images for training using varying values fo $C$ and $\sigma$ respectively and testing against the the MNIST Test data set with 10k images. $C$ is in the range ${5, 10, 15}$ $sigma$ is in ${4, 24, 50}$ and all of those combinations are used to train the SVM and calculate the average error for over the 135 training samples. 
-Figure \ref{fig:3_1} shows a scatter plot of the average training error versus the  test error, which let us to the conclusion that there is direct  relation between training and test error. High training errors will lead to high test errors.\\
-
-\begin{figure}[!h]
+To get a better understanding we took 150 sets from the MNIST training set with 70 images for training using varying values fo $C$ and $\sigma$ respectively and testing against the the MNIST Test data set with 10k images. $C$ is in the range ${5, 7.5, 10, 12.5, 15}$ $sigma$ is 20 values between $5$ and $50$ and all of those combinations are used to train the SVM and calculate the average error for over the 150 subset. 
+Figure \ref{fig:3_1} shows a scatter plot of the average training error vsus the  test error, which let us to the conclusion that there is direct  relation between training and test error. High training errors will lead to high test errors.
+\begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=1\textwidth]{figures/new/3_Figure_1}
 \end{center}
 \caption{\label{fig:3_1}  Test error in relation to the Training error  }
 \end{figure}
-
-
 Another metric we captured during our test runs was the number of support vectors. Figure \ref{fig:3_2} puts this number in relation to the average test error.  Here we can see multiple insights. 
 
-First, most of the test runs yielded less than $40$ support vectors, with the number of such ranging from $25$ to $53$. The data points are more dense on the left side of the range.\\
+First, most of the test runs yielded less than $40$ support vectors, with the number of such ranging from $25$ to $53$. The data points are more dense on the left side of the range.
 Secondly there is a visible correlation between the number of support vectors and the test error, when you ignore some outliers. However it seems that the sweet spot is located at 27 instead of 25, since there is a little drop in the observed error rate shortly after the beginning (at 25 ), which then rises again steadily to reach the maximum at location 53.
-
-
-\begin{figure}[!h]
+\begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=1\textwidth]{figures/new/3_Figure_2}
 \end{center}
 \caption{\label{fig:3_2} Number of support vectors in relation to the test error}
 \end{figure}
-
-
 \subsection{Finding the best $C$ and $\sigma$}
-
-Figure \ref{fig:3_3} and \ref{fig:3_4} show us the relation between varying values for $C$ and $\sigma$ and the average training and testing error. Both images hold the same information, but in different representation. We can see that low values for $C$ and high values $\sigma$  result in worse detection rates. 
+Figure \ref{fig:3_3} and \ref{fig:3_4} show us the relation between varying values for $C$ and $\sigma$ and the average training and testing error. Both images hold the same information, but in different representation. We can see that low values for $C$ and high values $\sigma$  result in worse detection rates. We see that the training error is 0 for small values of $\sigma$ and $\geq 0$ for larger values of $\sigma$. A small value of $C$ leads to a smaller $\sigma$ value where the training error becomes larger than 0. The test error decreases first as $\sigma$ gets smaller, but than starts to increase as $\sigma$ increases. $C$ has almost no influence for small $\sigma$ values and a small value of $C$ increases the test error for large $\sigma$.
 During our runs with $M$-fold cross validation we found the best suitable combination to be 
 \begin{align*}
 C= 25.454545454545453\\
@@ -104,15 +86,12 @@ These values align very well with the parameter space we during our experiments,
  \hline
   \textbf{$R_{max}$} & 0.03367346938775506       &     0.04081632653061229      \\
  \hline
- 
+
 \end{tabular}
 \caption{\label{tab:results} comparing RBF SVM with best parameters to linear SVM }
 \end{center}
 \end{table}
-
-
-
-\begin{figure}[!h]
+\begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=1\textwidth]{figures/new/3_Figure_4}
@@ -120,8 +99,7 @@ These values align very well with the parameter space we during our experiments,
 \end{center}
 \caption{\label{fig:3_3} Impact of varying values of $C$ and $\sigma$ on training and test error  }
 \end{figure}
-
-\begin{figure}[!h]
+\begin{figure}[h]
 \begin{center}
 \centering
 \includegraphics[width=1\textwidth]{figures/new/3_Figure_6}

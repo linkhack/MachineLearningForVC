@@ -31,12 +31,14 @@ def main():
                                                    100000)  # high value to get all the digits of the two classes
     test_data = mnist.transform_images(test_data).T  # transform into a matrix where images are in column
 
+    # Evaluate SVM for different hyperparameters
     for c in c_range:
         for sigma in sigma_range:
             test_error.clear()
             train_error.clear()
             nr_support_vectors.clear()
 
+            # get average error
             for i in range(nr_sets):
                 data_set = data[i::nr_sets]
                 target_set = targets[i::nr_sets]

@@ -28,6 +28,7 @@ def main():
 
     svm = SVM()
 
+    # perform cross validation for different hyperparameters
     for sigma in sigma_range:
         for c in c_range:
             avg_error = svm.cross_validation(data, targets, kernel.rbfkernel, sigma, c, nr_sets)
@@ -35,10 +36,7 @@ def main():
             print(avg_error)
 
     print(cv_error)
-
-    best_params = min(cv_error, key=cv_error.get)
-    print(f"Best Parameters (c, sigma) = {best_params} with cv_error = {cv_error[best_params]}")
-
+    # plot parameter space
     sorted_list = sorted(cv_error, key=lambda key_value: key_value[0])
     error_matrix = np.array([cv_error[key] for key in sorted_list]).reshape(len(c_range), len(sigma_range))
 
@@ -46,7 +44,11 @@ def main():
     plt.contourf(error_matrix)
     plt.show()
 
-    # train final svm on whole set ???
+    # find best parameters and evaluate test errors
+    best_params = min(cv_error, key=cv_error.get)
+    print(f"Best Parameters (c, sigma) = {best_params} with cv_error = {cv_error[best_params]}")
+
+    # train final svm on whole set
     svm.setSigma(best_params[1])
     [alpha, w0, sv_index] = svm.trainSVM(data, targets, kernel.rbfkernel, best_params[0])
     predict = np.sign(svm.discriminant(alpha, w0, sv_index, data, targets, test_data))
@@ -61,6 +63,8 @@ def main():
     print(f"RBF-SVM has error = {np.mean(error_rbf_svm)}")
     print(f"linear-SVM has avg = {np.mean(error_linear_svm)}")
 
+
+    # train on subsets and calculate the average errors
     rbf_error = []
     linear_error = []
 

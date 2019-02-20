@@ -17,7 +17,7 @@ We can again reformulate this by considering the dual problam. This is given by 
 	\text{s.t.}&& \sum\limits_{i=1}^N\ \alpha_i t_i &= 0& \\
 	&&0\leq\alpha_i&\leq C& 1\leq i \leq N
 \end{align*}
-We can use most matrices for \texttt{cvxopt} as before, we only need to change $G$ and $h$, but this is very simple, but we have to b e more careful at calculating $\omega_0$ and $\omega$ as there are also wrongly classified support vectors. We pick again the support vector with the largest $\alpha_i$, say with $i = i_{\max}$, and then:
+We can use most matrices for \texttt{cvxopt} as before, we only need to change $G$ and $h$, but this is very simple, but we have to be more careful at calculating $\omega_0$ and $\omega$ as there are also wrongly classified support vectors. Support vectors that lie inside the margin, or that are even wrongly classified, have $\alpha_i=C$. We pick again the support vector with the largest $\alpha_i$ of all $\alpha_i$ with $0\leq \alpha_i \leq C$, say with $i = i_{\max}$, and then:
 \[
 	\omega = \sum\limits_{i=1}^N\alpha_i t_i \bm{x_i}
 \]
@@ -44,7 +44,7 @@ We first show the result of a SVM with radial basis function and slack in figure
 	\label{task2::example}
 \end{figure}
 
-We also wished to get an overview of what the effect the parameters $C$ and $\sigma$ do. To this end, we trained a rbf-SVM with the same data set and we verified $\sigma$ and $C$. We used $\sigma\in\left\{ 0.1, 1, 5 \right\}$ and  $C\in\left\{ 1, 10, 100 \right\}$. We show the result in figure \ref{task2::influence}.
+We also wished to get an overview of what the effect the parameters $C$ and $\sigma$ do. To this end, we trained a rbf-SVM with the same data set and we studied the influence of $\sigma$ and $C$. We used $\sigma\in\left\{ 0.1, 1, 5 \right\}$ and  $C\in\left\{ 1, 10, 100 \right\}$. We show the result in figure \ref{task2::influence}.
 \begin{figure}
 	\includegraphics[width = 1\textwidth]{new/2_Figure_2}
 	\caption{Slack increases from left to right. $\sigma$ increases from top to bottom}
@@ -54,8 +54,6 @@ We also wished to get an overview of what the effect the parameters $C$ and $\si
 We see that as slack increases, the solution gets more complicated, or less regular. We can also see that the margin decreases. As $\sigma$ increases, the solution tends to get more linear. This is the case as more and more data points are influencing each other. A smaller sigma has less bias and more variance, and inverse for large sigma.
 
 Following error rates were achieved.
-
-
 \begin{tabular}{|c|c|c|c|}
 \multicolumn{3}{l}{}\\
 \multicolumn{3}{l}{Training error}\\

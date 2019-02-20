@@ -1,16 +1,16 @@
 \subsection{Implementation}
-We implemented the SVM using quadratic programming. We used the solver from the \texttt{cvxopt\footnote{https://cvxopt.org/}} library to solve the optimization problem. A SVM is based on a percentron, but instead oof chosing any separating hyperplane, we choose the one with the largest margin. This can be expressed as a quadratic program in the following form.
+We implemented the SVM using quadratic programming. We used the solver from the \texttt{cvxopt\footnote{https://cvxopt.org/}} library to solve the optimization problem. A SVM is based on a percentron, but instead of chosing any separating hyperplane, we choose the one with the largest margin. This can be expressed as a quadratic program in the following form.
 \begin{align*}
 	\min&&\, \frac{1}{2}\lVert w \rVert&&  \\
-	\text{s.t.}&&\, (\omega^tx_i+w_0)t_i && 1 \leq i \leq N.
+	\text{s.t.}&&\, (\omega^tx_i+w_0)t_i &\geq1& 1 \leq i \leq N.
 \end{align*}
-Instead of solving this directly we search the dual problem of this solution. This problem is given by following quadratic program.
+Instead of solving this directly we search the solution of the dual problem. This problem is given by following quadratic program.
 \begin{align*}
 	\max&& - \frac{1}{2} \sum\limits_{i=1}^N \sum\limits_{j=1}^N&\alpha_i\alpha_jt_it_j(x_i^tx_j) +  \sum\limits_{i=1}^N \alpha_i &\\
 	\text{s.t.}&& \sum\limits_{i=1}^N\ \alpha_i t_i &= 0& \\
 	&&\alpha_i&\geq0& 1\leq i \leq N
 \end{align*}
-We see sone advantages of this formulation. There is an equality instead of an inequality and we also see that we only have to calculate an inner product, this will be useful when we use the kernel trick.
+We see some advantages of this formulation. There is an equality instead of an inequality and we also see that we only have to calculate an inner product, this will be useful when we use the kernel trick.
 
 The solver from \texttt{cvxopt} assumes that the input has the form
 \begin{align*}

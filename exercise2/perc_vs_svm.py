@@ -12,7 +12,6 @@ def main():
     nr_sample = 35
     digits = [0, 7]
 
-
     [data, targets] = mnist.get_digits_compact(digits,nr_sample,nr_sets)
 
     # test set
