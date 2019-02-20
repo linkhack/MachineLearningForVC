@@ -8,10 +8,11 @@ class SVM:
     def __init__(self):
         """contructor"""
         # to be used with rbfKernels see exercise2.Kernel for function
-        self.sigma = 5.0
+        self.sigma = None
         # for cross-validation
         self.databasecv = np.zeros(2)
         self.targetbasecv = np.zeros(2)
+        self.completeGram = np.zeros(0)
 
     def setSigma(self, sigma):
         self.sigma = sigma
@@ -374,14 +375,14 @@ class SVM:
         print(c)
         print(sigma)
         error_rate = []
-
-        if kernel == k.linearkernel:
-            complete_gram = kernel(x, x)
-        elif kernel == k.rbfkernel:
-            complete_gram = kernel(x, x, sigma)
-        else:
-            return 0
-
+        if self.sigma != sigma:
+            if kernel == k.linearkernel:
+                self.completeGram = kernel(x, x)
+            elif kernel == k.rbfkernel:
+                self.complete_gram = kernel(x, x, sigma)
+            else:
+                return 0
+        self.setSigma(sigma)
         for i in range(nr_sets):
             # train_slice = slice(i, None, nr_sets)
             train_index = np.zeros_like(t, dtype=bool)
@@ -393,7 +394,7 @@ class SVM:
             #################################
             # Training
             #################################
-            gram_matrix = complete_gram[train_index, :][:, train_index]
+            gram_matrix = self.complete_gram[train_index, :][:, train_index]
 
             P = cvxopt.matrix(np.outer(train_targets, train_targets) * gram_matrix, tc='d')
             q = cvxopt.matrix(np.ones(nSamples) * -1, tc='d')
@@ -439,7 +440,7 @@ class SVM:
                 main_sv_index = np.argmax(alpha)
                 w0 = train_targets[main_sv_index] - np.sum(sv * sv_T * gram_matrix[sv_index, main_sv_index])
             else:
-                sv_index = (alpha > 1e-5)
+                sv_index = (alpha > 1e-4)
                 small_index = (alpha < c - 1e-5)
                 alpha_support = np.zeros_like(alpha)
                 alpha_support[small_index & sv_index] = alpha[small_index & sv_index]
@@ -468,7 +469,7 @@ class SVM:
             sv_index_whole = np.zeros_like(train_index, dtype=bool)
             sv_index_whole[i::nr_sets] = sv_index
 
-            y_predict = np.sign(w0 + sv * sv_T @ complete_gram[sv_index_whole, :][:, test_index])
+            y_predict = np.sign(w0 + sv * sv_T @ self.complete_gram[sv_index_whole, :][:, test_index])
 
             # calculate error rate
             correct = (y_predict == t[test_index])
