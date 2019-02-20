@@ -51,7 +51,7 @@ As we can see in figure \ref{fig:error_SVM_perc_boxplot} the SVM has a more stab
 This last section describes the effects of changing $C$ and $\sigma$ when using a RBF-kernel. In general $C$, a slack varibale, allows to not meet the margin requirement at a cost proportional to a value, which still allows us to minimize the error, but relaxes the stiffnes of linear separability.
 
 
-To get a better understanding we took 135 sets from the MNIST training set with 35 images for training using varying values fo $C$ and $\sigma$ respectively and testing against the the MNIST Test data set with 10k images. $C$ is in the range ${5, 10, 15}$ $sigma$ is in ${4, 24, 50}$ and all of those combinations are used to train the SVM and calculate the average error for over the 135 training samples. 
+To get a better understanding we took 150 sets from the MNIST training set with 70 images for training using varying values fo $C$ and $\sigma$ respectively and testing against the the MNIST Test data set with 10k images. $C$ is in the range ${5, 10, 15}$ $sigma$ is in ${4, 24, 50}$ and all of those combinations are used to train the SVM and calculate the average error for over the 135 training samples. 
 Figure \ref{fig:3_1} shows a scatter plot of the average training error versus the  test error, which let us to the conclusion that there is direct  relation between training and test error. High training errors will lead to high test errors.\\
 
 \begin{figure}[!h]
